@@ -220,21 +220,59 @@ class _LandingPageState extends State<LandingPage> {
             alignment: WrapAlignment.center,
             children: [
               _serviceCard(
-                "Pokemon TCG Full Art Proxy",
+                "TCG Full Art Proxy",
                 "\$25",
-                "We remove the holo from TCGP designs for a crisp, premium look.",
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: const TextStyle(color: Colors.grey, fontSize: 14, height: 1.5),
+                    children: [
+                      const TextSpan(text: "We recommend selecting a full art Pokémon card. You can find the complete list of TCGP Pokémon from the game "),
+                      TextSpan(
+                        text: "here",
+                        style: const TextStyle(color: Color(0xFFF6E05E), decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _launchURL('https://www.pokemon-zone.com/cards/'),
+                      ),
+                      const TextSpan(text: ". For Pokémon cards not from the game, you can find the list "),
+                      TextSpan(
+                        text: "here",
+                        style: const TextStyle(color: Color(0xFFF6E05E), decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _launchURL('https://www.pokemon.com/us/pokemon-tcg/pokemon-cards'),
+                      ),
+                      const TextSpan(text: "."),
+                    ],
+                  ),
+                ),
                 Icons.style,
               ),
               _serviceCard(
-                "Custom Full Art",
+                "Provide Your Full Art",
                 "\$25",
-                "Provide your own art. Recommended 50% subject, 50% background.",
+                const Text(
+                  "Provide your own art. Recommended 50% subject, 50% background. We will work together to build the Pokémon card for your art.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                    height: 1.5,
+                  ),
+                ),
                 Icons.auto_awesome,
               ),
               _serviceCard(
                 "Gemini AI Custom",
                 "\$35",
-                "We design your pet or person as a Pokémon using AI prompts.",
+                const Text(
+                  "We design your art for you using AI prompts, then we will work together to build the Pokémon theme card for your art. Perfect for turning pets or people into custom Pokémon cards.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                    height: 1.5,
+                  ),
+                ),
                 Icons.psychology,
               ),
             ],
@@ -312,7 +350,7 @@ class _LandingPageState extends State<LandingPage> {
                 onHandleTap: () => _launchURL('https://instagram.com/JLStudios416'),
               ),
               _stepCircle("2", "Choose Pickup (Bayview Ave & Elgin Mills Rd E, Richmond Hill) or Shipping (\$5)"),
-              _stepCircle("3", "50% Deposit via E-Transfer/Cash"),
+              _stepCircle("3", "Payment in Full via E-Transfer"),
               _stepCircle("4", "Production Begins (Ready in ~1 week)"),
             ],
           ),
@@ -387,8 +425,8 @@ class _LandingPageState extends State<LandingPage> {
           ),
           const SizedBox(height: 20),
           const Text(
-            "• Keep in the included sleeve at all times.\n"
-            "• Do NOT use wet wipes (ink may smear).\n"
+            "• Keep the card in a protective sleeve at all times. (card sleeve included)\n"
+            "• Do NOT use wet wipes as the ink of the card may smear.\n"
             "• Avoid direct sunlight for extended periods.",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18, height: 1.8),
@@ -407,18 +445,34 @@ class _LandingPageState extends State<LandingPage> {
             title: "AI Art Philosophy",
             subtitle: "Adapting to the Future",
           ),
-          const SizedBox(height: 20),
-          const Text(
-            "We use Gemini AI to bring your visions to life. We offer minor edits on generated images. "
-            "Please be specific! (One client asked for a brown 'ear' when they meant 'beard'—precision saves time!)",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16),
+          const SizedBox(height: 30),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 800),
+            child: Column(
+              children: [
+                const Text(
+                  "Our team is aware of the negative feedback regarding what Gemini AI can do. Unfortunately, we don’t offer a service where an illustrator can sketch the full art. However, you can have someone create the artwork for you and then reach back out to us; we can proceed with Service #2 (Provided Custom Full Art) from there.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, height: 1.6),
+                ),
+                const SizedBox(height: 20),
+
+                const Text(
+                  "Without this technology, our project wouldn’t have progressed as far as it has. Instead of resisting, the best approach is to learn to adapt and find ways to work alongside this growing technology.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    height: 1.6,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
-
   Widget _buildFooter() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 40),
@@ -466,7 +520,7 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget _serviceCard(String title, String price, String desc, IconData icon) {
+  Widget _serviceCard(String title, String price, Widget descWidget, IconData icon) {
     return Container(
       width: 300,
       padding: const EdgeInsets.all(30),
@@ -479,20 +533,14 @@ class _LandingPageState extends State<LandingPage> {
         children: [
           Icon(icon, size: 40, color: const Color(0xFFD4AF37)),
           const SizedBox(height: 20),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Text(title,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center
           ),
-          Text(
-            price,
-            style: const TextStyle(fontSize: 24, color: Color(0xFFD4AF37)),
-          ),
+          Text(price, style: const TextStyle(fontSize: 24, color: Color(0xFFD4AF37))),
           const SizedBox(height: 15),
-          Text(
-            desc,
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.grey),
-          ),
+          // Use the widget passed in instead of a plain Text widget
+          descWidget,
         ],
       ),
     );
