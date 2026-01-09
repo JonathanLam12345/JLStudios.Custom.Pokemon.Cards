@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/gestures.dart';
 
 void main() {
   runApp(const JLStudiosApp());
@@ -19,7 +20,7 @@ class JLStudiosApp extends StatelessWidget {
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF0F0F0F),
         primaryColor: const Color(0xFFD4AF37), // Gold
-       // textTheme: Google_Fonts.poppinsTextTheme(ThemeData.dark().textTheme),
+        // textTheme: Google_Fonts.poppinsTextTheme(ThemeData.dark().textTheme),
       ),
       home: const LandingPage(),
     );
@@ -38,8 +39,11 @@ class _LandingPageState extends State<LandingPage> {
 
   // Helper to scroll to sections
   void _scrollTo(GlobalKey key) {
-    Scrollable.ensureVisible(key.currentContext!,
-        duration: const Duration(milliseconds: 800), curve: Curves.easeInOut);
+    Scrollable.ensureVisible(
+      key.currentContext!,
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeInOut,
+    );
   }
 
   final GlobalKey _aboutKey = GlobalKey();
@@ -56,8 +60,13 @@ class _LandingPageState extends State<LandingPage> {
       appBar: AppBar(
         backgroundColor: Colors.black.withOpacity(0.7),
         elevation: 0,
-        title: Text('JLStudios | HoloX',
-            style: GoogleFonts.montserrat(fontWeight: FontWeight.bold, letterSpacing: 2)),
+        title: Text(
+          'JLStudios',
+          style: GoogleFonts.montserrat(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,
+          ),
+        ),
         actions: [
           if (!isMobile) ...[
             _navButton("About Us", _aboutKey),
@@ -65,11 +74,20 @@ class _LandingPageState extends State<LandingPage> {
             _navButton("Holo Patterns", _holoKey),
             _navButton("Order Now", _purchaseKey),
           ],
-          IconButton(
-            icon: const Icon(Icons.camera_alt_outlined, color: Color(0xFFD4AF37)),
-            onPressed: () => _launchURL('https://instagram.com/JLStudios416'),
+          // Replace the old IconButton with this:
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: InkWell(
+              onTap: () => _launchURL('https://instagram.com/JLStudios416'),
+              child: Image.asset(
+                'assets/instagram_logo.png',
+                width: 20,
+                height: 20,
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 10),
         ],
       ),
       body: SingleChildScrollView(
@@ -116,13 +134,20 @@ class _LandingPageState extends State<LandingPage> {
         children: [
           const Text(
             "BRING DIGITAL BEAUTY TO LIFE",
-            style: TextStyle(fontSize: 16, letterSpacing: 4, color: Color(0xFFD4AF37)),
+            style: TextStyle(
+              fontSize: 16,
+              letterSpacing: 4,
+              color: Color(0xFFD4AF37),
+            ),
           ).animate().fadeIn(duration: 800.ms).slideY(begin: 0.2),
           const SizedBox(height: 20),
           Text(
             "Premium Custom TCGP Cards",
             textAlign: TextAlign.center,
-            style: GoogleFonts.montserrat(fontSize: 50, fontWeight: FontWeight.w900),
+            style: GoogleFonts.montserrat(
+              fontSize: 50,
+              fontWeight: FontWeight.w900,
+            ),
           ).animate().fadeIn(delay: 400.ms).scale(),
           const SizedBox(height: 40),
           ElevatedButton(
@@ -131,7 +156,7 @@ class _LandingPageState extends State<LandingPage> {
               foregroundColor: Colors.black,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
             ),
-            onPressed: () => _scrollTo(_purchaseKey),
+            onPressed: () => _scrollTo(_aboutKey),
             child: const Text("START YOUR COLLECTION"),
           ).animate().shake(delay: 1500.ms),
         ],
@@ -148,33 +173,29 @@ class _LandingPageState extends State<LandingPage> {
         children: [
           Expanded(
             flex: isMobile ? 0 : 1,
-            child: Container(
-              height: 400,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFFD4AF37), width: 2),
-                image: const DecorationImage(
-                  image: NetworkImage('https://via.placeholder.com/400x600/222/D4AF37?text=Card+Showcase'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ).animate().slideX(begin: -0.1),
+            child: const CardSlideshow(), // Your new animated slideshow
           ),
+
           const SizedBox(width: 60, height: 40),
           Expanded(
             flex: isMobile ? 0 : 1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionHeader(title: "About Us", subtitle: "Crafting Physical Legends"),
+                const SectionHeader(
+                  title: "About Us",
+                  subtitle: "Crafting Physical Legends",
+                ),
                 const Text(
                   "Ever wished you could hold those stunning digital cards from Pokémon TCGP mobile app game in real life? Now you can! "
-                      "Our team offers high-end printed proxy cards that bring your favorite designs to life with premium ink and selective holo technology.",
+                  "Our team offers high-end printed proxy cards that bring your favorite designs to life with premium ink and selective holo technology.",
                   style: TextStyle(fontSize: 18, height: 1.6),
                 ),
                 const SizedBox(height: 20),
                 _featurePoint("Authentic backs for that genuine feel."),
-                _featurePoint("Selective Holo: We mask characters so they pop!"),
+                _featurePoint(
+                  "Selective Holo: We mask characters so they pop!",
+                ),
                 _featurePoint("Professional-grade vinyl and ink."),
               ],
             ).animate().fadeIn(delay: 200.ms),
@@ -198,9 +219,24 @@ class _LandingPageState extends State<LandingPage> {
             runSpacing: 30,
             alignment: WrapAlignment.center,
             children: [
-              _serviceCard("Pokemon TCG Full Art Proxy", "\$25", "We remove the holo from TCGP designs for a crisp, premium look.", Icons.style),
-              _serviceCard("Custom Full Art", "\$25", "Provide your own art. Recommended 50% subject, 50% background.", Icons.auto_awesome),
-              _serviceCard("Gemini AI Custom", "\$35", "We design your pet or person as a Pokémon using AI prompts.", Icons.psychology),
+              _serviceCard(
+                "Pokemon TCG Full Art Proxy",
+                "\$25",
+                "We remove the holo from TCGP designs for a crisp, premium look.",
+                Icons.style,
+              ),
+              _serviceCard(
+                "Custom Full Art",
+                "\$25",
+                "Provide your own art. Recommended 50% subject, 50% background.",
+                Icons.auto_awesome,
+              ),
+              _serviceCard(
+                "Gemini AI Custom",
+                "\$35",
+                "We design your pet or person as a Pokémon using AI prompts.",
+                Icons.psychology,
+              ),
             ],
           ),
         ],
@@ -217,14 +253,14 @@ class _LandingPageState extends State<LandingPage> {
       key: key,
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-          vertical: isMobile ? 40 : 80,
-          horizontal: 20
+        vertical: isMobile ? 40 : 80,
+        horizontal: 20,
       ),
       child: Column(
         children: [
           const SectionHeader(
-              title: "Holographic Patterns",
-              subtitle: "Select Your Shine"
+            title: "Holographic Patterns",
+            subtitle: "Select Your Shine",
           ),
           const SizedBox(height: 40),
 
@@ -232,12 +268,18 @@ class _LandingPageState extends State<LandingPage> {
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1000),
             child: Wrap(
-              spacing: 25,      // Space between images horizontally
-              runSpacing: 30,   // Space between images vertically (the "next row" gap)
-              alignment: WrapAlignment.center, // Centers items in the row
+              spacing: 25,
+              // Space between images horizontally
+              runSpacing: 30,
+              // Space between images vertically (the "next row" gap)
+              alignment: WrapAlignment.center,
+              // Centers items in the row
               children: [
                 _holoType("Scattered Glass", "assets/scattered_glass.jpg"),
-                _holoType("Reflective Rainbow", "assets/reflective_rainbow.jpg"),
+                _holoType(
+                  "Reflective Rainbow",
+                  "assets/reflective_rainbow.jpg",
+                ),
                 _holoType("Fine Sparkle", "assets/fine_sprakle.jpg"),
                 _holoType("Scattered Stars", "assets/scattered_stars.jpg"),
               ],
@@ -255,14 +297,21 @@ class _LandingPageState extends State<LandingPage> {
       color: const Color(0xFF151515),
       child: Column(
         children: [
-          const SectionHeader(title: "How To Purchase", subtitle: "Simple 4-Step Process"),
+          const SectionHeader(
+            title: "How To Purchase",
+            subtitle: "Simple 4-Step Process",
+          ),
           const SizedBox(height: 40),
           Wrap(
             spacing: 20,
             runSpacing: 20,
             children: [
-              _stepCircle("1", "DM on Instagram @JLStudios416"),
-              _stepCircle("2", "Choose Pickup (Bayview) or Shipping (\$5)"),
+              _stepCircle(
+                "1",
+                "DM on Instagram @JLStudios416",
+                onHandleTap: () => _launchURL('https://instagram.com/JLStudios416'),
+              ),
+              _stepCircle("2", "Choose Pickup (Bayview Ave & Elgin Mills Rd E, Richmond Hill) or Shipping (\$5)"),
               _stepCircle("3", "50% Deposit via E-Transfer/Cash"),
               _stepCircle("4", "Production Begins (Ready in ~1 week)"),
             ],
@@ -277,15 +326,41 @@ class _LandingPageState extends State<LandingPage> {
       padding: const EdgeInsets.all(60),
       child: Column(
         children: [
-          const SectionHeader(title: "How It's Made", subtitle: "The Craftsmanship"),
+          const SectionHeader(
+            title: "How It's Made",
+            subtitle: "The Craftsmanship",
+          ),
           const SizedBox(height: 30),
-          const Text(
-            "We are active members of r/customtradingcard. Our process involves pressing two vinyl sheets onto a real Pokémon card base.",
+          RichText(
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16),
+            text: TextSpan(
+              // Default style for the whole sentence
+              style: const TextStyle(fontSize: 16, color: Colors.white, height: 1.5),
+              children: [
+                const TextSpan(text: "We are active members of "),
+                TextSpan(
+                  text: "r/customtradingcard",
+                  style: const TextStyle(
+                    color: Colors.white, // Using the lighter yellow we discussed
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                  ),
+                  // This makes it clickable
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => _launchURL('https://www.reddit.com/r/customtradingcard/'),
+                ),
+                const TextSpan(
+                  text: ". Our process involves pressing two vinyl sheets onto a real Pokémon card base.",
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 40),
-          Image.network('https://via.placeholder.com/800x400/222/D4AF37?text=Layers+Diagram+Image'),
+          Image.asset(
+            'assets/how_cards_made.png',
+            width:340, // Adjust this number until it looks right
+            fit: BoxFit.contain,
+          ),
           const SizedBox(height: 20),
           const Text(
             "Note: We use a white marker technique for selective holo. Small air bubbles or slight 'bulges' may occur due to the layering process, but we use silicon air blowers and dust covers to minimize these.",
@@ -306,12 +381,15 @@ class _LandingPageState extends State<LandingPage> {
         children: [
           const Icon(Icons.verified_user, color: Color(0xFFD4AF37), size: 50),
           const SizedBox(height: 20),
-          const Text("Handling & Storage", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          const Text(
+            "Handling & Storage",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 20),
           const Text(
             "• Keep in the included sleeve at all times.\n"
-                "• Do NOT use wet wipes (ink may smear).\n"
-                "• Avoid direct sunlight for extended periods.",
+            "• Do NOT use wet wipes (ink may smear).\n"
+            "• Avoid direct sunlight for extended periods.",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18, height: 1.8),
           ),
@@ -325,11 +403,14 @@ class _LandingPageState extends State<LandingPage> {
       padding: const EdgeInsets.all(60),
       child: Column(
         children: [
-          const SectionHeader(title: "AI Art Philosophy", subtitle: "Adapting to the Future"),
+          const SectionHeader(
+            title: "AI Art Philosophy",
+            subtitle: "Adapting to the Future",
+          ),
           const SizedBox(height: 20),
           const Text(
             "We use Gemini AI to bring your visions to life. We offer minor edits on generated images. "
-                "Please be specific! (One client asked for a brown 'ear' when they meant 'beard'—precision saves time!)",
+            "Please be specific! (One client asked for a brown 'ear' when they meant 'beard'—precision saves time!)",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16),
           ),
@@ -345,10 +426,25 @@ class _LandingPageState extends State<LandingPage> {
         children: [
           const Divider(color: Colors.white24),
           const SizedBox(height: 20),
-          const Text("© 2025 JLSTUDIOS | RICHMOND HILL, CA"),
-          IconButton(
-            icon: const Icon(Icons.camera_alt_outlined, color: Color(0xFFD4AF37)),
-            onPressed: () => _launchURL('https://instagram.com/JLStudios416'),
+          const Text("©2025 JLStudios"),
+          const SizedBox(height: 10),
+
+          // Clickable Instagram Logo
+          InkWell(
+            onTap: () => _launchURL('https://instagram.com/JLStudios416'),
+            borderRadius: BorderRadius.circular(10),
+            // Optional: rounds the splash effect
+
+
+              child: Image.asset(
+                'assets/instagram_logo.png',
+                // Ensure this file is in your assets folder
+                width: 25,
+                height: 25,
+
+                fit: BoxFit.contain,
+              ),
+
           ),
         ],
       ),
@@ -383,16 +479,27 @@ class _LandingPageState extends State<LandingPage> {
         children: [
           Icon(icon, size: 40, color: const Color(0xFFD4AF37)),
           const SizedBox(height: 20),
-          Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          Text(price, style: const TextStyle(fontSize: 24, color: Color(0xFFD4AF37))),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            price,
+            style: const TextStyle(fontSize: 24, color: Color(0xFFD4AF37)),
+          ),
           const SizedBox(height: 15),
-          Text(desc, textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
+          Text(
+            desc,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.grey),
+          ),
         ],
       ),
     );
   }
 
-  Widget _holoType(String name, String imgPath) { // Renamed imgUrl to imgPath for clarity
+  Widget _holoType(String name, String imgPath) {
+    // Renamed imgUrl to imgPath for clarity
     return Container(
       margin: const EdgeInsets.only(right: 20),
       width: 180,
@@ -422,7 +529,7 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget _stepCircle(String num, String text) {
+  Widget _stepCircle(String num, String text, {VoidCallback? onHandleTap}) {
     return SizedBox(
       width: 200,
       child: Column(
@@ -432,12 +539,34 @@ class _LandingPageState extends State<LandingPage> {
             child: Text(num, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
           ),
           const SizedBox(height: 15),
-          Text(text, textAlign: TextAlign.center),
+
+          // Use RichText to allow partial styling and clicking
+          RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+              children: [
+                // Check if it's the Instagram step
+                if (text.contains("@")) ...[
+                  TextSpan(text: text.split("@")[0]), // "DM on Instagram "
+                  TextSpan(
+                    text: "@${text.split("@")[1]}", // "@JLStudios416"
+                    style: const TextStyle(
+                      color: Colors.white, // Gold link color
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()..onTap = onHandleTap,
+                  ),
+                ] else
+                  TextSpan(text: text), // Just regular text for other steps
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
-
   Future<void> _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
       throw Exception('Could not launch $url');
@@ -448,19 +577,90 @@ class _LandingPageState extends State<LandingPage> {
 class SectionHeader extends StatelessWidget {
   final String title;
   final String subtitle;
+
   const SectionHeader({super.key, required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(title.toUpperCase(),
-            style: const TextStyle(color: Color(0xFFD4AF37), letterSpacing: 4, fontWeight: FontWeight.bold)),
+        Text(
+          title.toUpperCase(),
+          style: const TextStyle(
+            color: Color(0xFFD4AF37),
+            letterSpacing: 4,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 8),
-        Text(subtitle, style: GoogleFonts.montserrat(fontSize: 32, fontWeight: FontWeight.bold)),
+        Text(
+          subtitle,
+          style: GoogleFonts.montserrat(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 20),
         Container(width: 60, height: 2, color: const Color(0xFFD4AF37)),
       ],
     );
+  }
+}
+
+class CardSlideshow extends StatefulWidget {
+  const CardSlideshow({super.key});
+
+  @override
+  State<CardSlideshow> createState() => _CardSlideshowState();
+}
+
+class _CardSlideshowState extends State<CardSlideshow> {
+  final PageController _pageController = PageController();
+
+  // List of your custom card assets
+  final List<String> cardImages = [
+    'assets/charizard_with_stand.jpg',
+    'assets/rowan.jpg',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-play logic: Changes every 8 seconds
+    Future.delayed(const Duration(seconds: 8), _autoPlay);
+  }
+
+  void _autoPlay() {
+    if (_pageController.hasClients) {
+      int nextPage = (_pageController.page!.toInt() + 1) % cardImages.length;
+      _pageController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.easeInOut,
+      );
+    }
+    Future.delayed(const Duration(seconds: 4), _autoPlay);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 400,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFD4AF37), width: 2),
+      ),
+      // ClipRRect ensures images don't spill over the rounded corners
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: PageView.builder(
+          controller: _pageController,
+          itemCount: cardImages.length,
+          itemBuilder: (context, index) {
+            return Image.asset(cardImages[index], fit: BoxFit.contain);
+          },
+        ),
+      ),
+    ).animate().slideX(begin: -0.1);
   }
 }
