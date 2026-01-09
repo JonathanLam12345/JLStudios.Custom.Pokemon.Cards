@@ -451,7 +451,7 @@ class _LandingPageState extends State<LandingPage> {
             child: Column(
               children: [
                 const Text(
-                  "Our team is aware of the negative feedback regarding what Gemini AI can do. Unfortunately, we don’t offer a service where an illustrator can sketch the full art. However, you can have someone create the artwork for you and then reach back out to us; we can proceed with Service #2 (Provided Custom Full Art) from there.",
+                  "Our team is aware of the negative feedback regarding what Gemini AI can do. Unfortunately, we don’t offer a service where an illustrator can sketch the full art. However, you can have someone create the artwork for you and then reach back out to us; we can proceed with Service \"Provided Custom Full Art\" from there.",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16, height: 1.6),
                 ),
