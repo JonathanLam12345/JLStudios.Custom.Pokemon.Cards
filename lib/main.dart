@@ -688,17 +688,23 @@ class CardSlideshow extends StatefulWidget {
 class _CardSlideshowState extends State<CardSlideshow> {
   final PageController _pageController = PageController();
 
-  // List of your custom card assets
   final List<String> cardImages = [
-    'assets/charizard_with_stand.jpg',
+    'assets/charizard.jpg',
     'assets/rowan.jpg',
+    'assets/pikachu.jpg',
+    'assets/vlad.jpg',
+    'assets/jason.png',
+    'assets/espeon.png',
+    'assets/hiro.jpg',
+    'assets/serena.jpg',
+    'assets/raz.jpg',
+    'assets/philip.jpg',
   ];
 
   @override
   void initState() {
     super.initState();
-    // Auto-play logic: Changes every 8 seconds
-    Future.delayed(const Duration(seconds: 8), _autoPlay);
+    Future.delayed(const Duration(seconds: 10), _autoPlay);
   }
 
   void _autoPlay() {
@@ -710,7 +716,18 @@ class _CardSlideshowState extends State<CardSlideshow> {
         curve: Curves.easeInOut,
       );
     }
-    Future.delayed(const Duration(seconds: 4), _autoPlay);
+    Future.delayed(const Duration(seconds: 6), _autoPlay); // Slightly faster auto-play
+  }
+
+  // Navigation Logic
+  void _moveNext() {
+    _pageController.nextPage(
+        duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+  }
+
+  void _movePrevious() {
+    _pageController.previousPage(
+        duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
   }
 
   @override
@@ -721,17 +738,61 @@ class _CardSlideshowState extends State<CardSlideshow> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xFFD4AF37), width: 2),
       ),
-      // ClipRRect ensures images don't spill over the rounded corners
       child: ClipRRect(
         borderRadius: BorderRadius.circular(18),
-        child: PageView.builder(
-          controller: _pageController,
-          itemCount: cardImages.length,
-          itemBuilder: (context, index) {
-            return Image.asset(cardImages[index], fit: BoxFit.contain);
-          },
+        child: Stack(
+          children: [
+            // 1. The Image Slider
+            PageView.builder(
+              controller: _pageController,
+              itemCount: cardImages.length,
+              itemBuilder: (context, index) {
+                return Image.asset(cardImages[index], fit: BoxFit.contain);
+              },
+            ),
+
+            // 2. Left Arrow
+            Positioned(
+              left: 10,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: _navArrow(
+                  icon: Icons.arrow_back_ios_new,
+                  onPressed: _movePrevious,
+                ),
+              ),
+            ),
+
+            // 3. Right Arrow
+            Positioned(
+              right: 10,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: _navArrow(
+                  icon: Icons.arrow_forward_ios,
+                  onPressed: _moveNext,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     ).animate().slideX(begin: -0.1);
+  }
+
+  // Helper widget for the arrow buttons
+  Widget _navArrow({required IconData icon, required VoidCallback onPressed}) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.black.withOpacity(0.3), // Dark subtle circle background
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: const Color(0xFFD4AF37), size: 24),
+        onPressed: onPressed,
+      ),
+    );
   }
 }
