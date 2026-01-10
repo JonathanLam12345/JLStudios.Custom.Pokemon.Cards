@@ -282,7 +282,7 @@ class _LandingPageState extends State<LandingPage> {
                 "Gemini AI Custom",
                 "\$35",
                 const Text(
-                  "We design your art for you using AI prompts, then we will work together to build the Pokémon theme card for your art. Perfect for turning pets or people into custom Pokémon cards.",
+                  "We will design your full art for you using AI prompts, then we will work together to build the Pokémon theme card. Perfect for turning pets or people into custom Pokémon cards!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey,
@@ -433,11 +433,13 @@ class _LandingPageState extends State<LandingPage> {
       color: Colors.black,
       width: double.infinity,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.verified_user, color: Color(0xFFD4AF37), size: 50),
           const SizedBox(height: 20),
           const Text(
             "Handling & Storage",
+            textAlign: TextAlign.center,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
@@ -569,6 +571,7 @@ class _LandingPageState extends State<LandingPage> {
       margin: const EdgeInsets.only(right: 20),
       width: 180,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
@@ -588,7 +591,8 @@ class _LandingPageState extends State<LandingPage> {
             ),
           ),
           const SizedBox(height: 10),
-          Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(name,textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+
         ],
       ),
     );
@@ -651,6 +655,7 @@ class SectionHeader extends StatelessWidget {
       children: [
         Text(
           title.toUpperCase(),
+          textAlign: TextAlign.center,
           style: const TextStyle(
             color: Color(0xFFD4AF37),
             letterSpacing: 4,
@@ -660,6 +665,7 @@ class SectionHeader extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           subtitle,
+          textAlign: TextAlign.center,
           style: GoogleFonts.montserrat(
             fontSize: 32,
             fontWeight: FontWeight.bold,
