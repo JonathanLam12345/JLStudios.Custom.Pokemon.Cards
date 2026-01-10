@@ -48,6 +48,7 @@ dev_dependencies:
   google_fonts: ^6.2.1
   flutter_animate: ^4.5.0
   url_launcher: ^6.3.0
+  firebase_core: 4.2.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

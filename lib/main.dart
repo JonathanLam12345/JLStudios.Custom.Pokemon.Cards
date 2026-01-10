@@ -4,7 +4,24 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+Future<void> main() async {
+
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+        apiKey: "AIzaSyCYkT62xc7bvkUvszzqlNIps2w1i-DTiCs",
+        authDomain: "jlstudios-custom-cards.firebaseapp.com",
+        projectId: "jlstudios-custom-cards",
+        storageBucket: "jlstudios-custom-cards.firebasestorage.app",
+        messagingSenderId: "517030096782",
+        appId: "1:517030096782:web:e822239c2e58751f5cfedf",
+        measurementId: "G-6DD22GDJYP"
+    ),
+  );
+
+
   runApp(const JLStudiosApp());
 }
 
@@ -346,10 +363,10 @@ class _LandingPageState extends State<LandingPage> {
             children: [
               _stepCircle(
                 "1",
-                "DM on Instagram @JLStudios416",
+                "DM us on Instagram @JLStudios416",
                 onHandleTap: () => _launchURL('https://instagram.com/JLStudios416'),
               ),
-              _stepCircle("2", "Choose Pickup (Bayview Ave & Elgin Mills Rd E, Richmond Hill) or Shipping (\$5)"),
+              _stepCircle("2", "Choose Pickup (Bayview Ave & Elgin Mills Rd E, Richmond Hill, Ontario, Canada) or Shipping (\$5)"),
               _stepCircle("3", "Payment in Full via E-Transfer"),
               _stepCircle("4", "Production Begins (Ready in ~1 week)"),
             ],
