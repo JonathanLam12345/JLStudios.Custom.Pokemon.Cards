@@ -268,7 +268,7 @@ class _LandingPageState extends State<LandingPage> {
                 "Provide Your Full Art",
                 "\$25",
                 const Text(
-                  "Provide your own art. Recommended 50% subject, 50% background. We will work together to build the Pokémon card for your art.",
+                  "Provide your own art. Recommended 50% subject, 50% background. We will work together to build the Pokémon card your artwork.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey,
@@ -282,7 +282,7 @@ class _LandingPageState extends State<LandingPage> {
                 "Gemini AI Custom",
                 "\$35",
                 const Text(
-                  "We will design your full art for you using AI prompts, then we will work together to build the Pokémon theme card. Perfect for turning pets or people into custom Pokémon cards!",
+                  "We will design your full art for you using AI prompts, then we will work together to build the Pokémon card. Perfect for turning pets or people into custom Pokémon cards!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey,
@@ -411,16 +411,18 @@ class _LandingPageState extends State<LandingPage> {
             ),
           ),
           const SizedBox(height: 40),
-          Image.asset(
-            'assets/how_cards_made.png',
-            width:340, // Adjust this number until it looks right
-            fit: BoxFit.contain,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6), // Adjust this number for more or less curve
+            child: Image.asset(
+              'assets/how_cards_made.png',
+              width: 340,
+              fit: BoxFit.contain,
+            ),
           ),
           const SizedBox(height: 20),
           const Text(
             "Note: We use a white marker technique for selective holo. Small air bubbles or slight 'bulges' may occur due to the layering process, but we use silicon air blowers and dust covers to minimize these.",
             style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -447,7 +449,6 @@ class _LandingPageState extends State<LandingPage> {
             "• Keep the card in a protective sleeve at all times. (card sleeve included)\n"
             "• Do NOT use wet wipes as the ink of the card may smear.\n"
             "• Avoid direct sunlight for extended periods.",
-            textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18, height: 1.8),
           ),
         ],
@@ -471,7 +472,6 @@ class _LandingPageState extends State<LandingPage> {
               children: [
                 const Text(
                   "Our team is aware of the negative feedback regarding what Gemini AI can do. Unfortunately, we don’t offer a service where an illustrator can sketch the full art. However, you can have someone create the artwork for you and then reach back out to us; we can proceed with Service \"Provided Custom Full Art\" from there.",
-                  textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16, height: 1.6),
                 ),
                 const SizedBox(height: 20),
