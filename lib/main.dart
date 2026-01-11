@@ -689,16 +689,20 @@ class _CardSlideshowState extends State<CardSlideshow> {
   final PageController _pageController = PageController();
 
   final List<String> cardImages = [
-    'assets/charizard.jpg',
+    'assets/elsie.png',
+    'assets/charizard1.jpg',
     'assets/rowan.jpg',
     'assets/pikachu.jpg',
     'assets/vlad.jpg',
+    'assets/charizard.jpg',
     'assets/jason.png',
     'assets/espeon.png',
     'assets/hiro.jpg',
+    'assets/charizard_with_stand.jpg',
     'assets/serena.jpg',
     'assets/raz.jpg',
     'assets/philip.jpg',
+    'assets/costco.jpg',
   ];
 
   @override
