@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -77,11 +78,16 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.black.withOpacity(0.4), // More transparent
+    elevation: 0,
+    flexibleSpace: ClipRect(
+    child: BackdropFilter(
+    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // The "Frosted" look
+    child: Container(color: Colors.transparent),
+    ),
+    ),
 
 
-
-        backgroundColor: Colors.black.withOpacity(0.7),
-        elevation: 0,
         title: Text(
           'JLStudios',
           style: GoogleFonts.montserrat(
@@ -122,9 +128,11 @@ class _LandingPageState extends State<LandingPage> {
             _buildServicesSection(isMobile, _servicesKey),
             _buildHoloSelector(_holoKey),
             _buildHowToPurchase(isMobile, _purchaseKey),
-            _buildHowMadeSection(isMobile),
-            _buildCareTips(),
-            _buildAIFeedback(),
+            //_buildHowMadeSection(isMobile),
+            //_buildCareTips(),
+            //_buildAIFeedback(),
+
+            _buildFAQSection(),
             _buildFooter(),
           ],
         ),
@@ -378,7 +386,7 @@ class _LandingPageState extends State<LandingPage> {
           const SizedBox(height: 40),
           Wrap(
             spacing: 20,
-            runSpacing: 20,
+            runSpacing: 40, // Increased vertical spacing to fit the button
             alignment: WrapAlignment.center,
             children: [
               _stepCircle(
@@ -386,63 +394,41 @@ class _LandingPageState extends State<LandingPage> {
                 "DM us on Instagram @JLStudios416",
                 onHandleTap: () => _launchURL('https://instagram.com/JLStudios416'),
               ),
-              _stepCircle("2", "Choose Pickup (Bayview Ave & Elgin Mills Rd E, Richmond Hill, Ontario, Canada) or Shipping (\$5)"),
-              _stepCircle("3", "Payment in Full via E-Transfer"),
+              _stepCircle("2", "Choose Pickup (Richmond Hill, ON) or Shipping (\$5)"),
+
+              // --- UPDATED STEP 3 ---
+              _stepCircle(
+                "3",
+                "Payment in Full via E-Transfer",
+                extra: TextButton.icon(
+                  onPressed: () {
+                    Clipboard.setData(const ClipboardData(text: "jonathanlam@hotmail.ca"));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Email copied to clipboard!"),
+                        backgroundColor: Color(0xFFD4AF37),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.copy, size: 14, color: Color(0xFFD4AF37)),
+                  label: const Text(
+                      "Copy E-transfer Email",
+                      style: TextStyle(color: Colors.white70, fontSize: 12)
+                  ),
+                ),
+              ),
+
               _stepCircle("4", "Production Begins (Ready in ~1 week)"),
             ],
           ),
-          const SizedBox(height: 50),
 
-          // --- SUBTLE DISCLAIMER SECTION ---
-          Container(
-            constraints: const BoxConstraints(maxWidth: 800),
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              // Very faint border so it doesn't draw the eye away from the services
-              border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.4)),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Muted icon color
-                Icon(
-                    Icons.info_outline,
-                    color: const Color(0xFFD4AF37).withOpacity(0.4),
-                    size: 20
-                ),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: RichText(
-                    text: TextSpan(
-                      // white24 makes this look like secondary "fine print"
-                      style: const TextStyle(
-                          color: Colors.white24,
-                          fontSize: 13,
-                          height: 1.5
-                      ),
-                      children: [
-                        TextSpan(
-                          text: "Disclaimer: ",
-                          style: TextStyle(
-                              color: const Color(0xFFD4AF37).withOpacity(0.4),
-                              fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        const TextSpan(
-                          text: "For shipping, delivery times may vary depending on your location and the time of year (it may take a few weeks). If you plan on giving the card as a gift for a specific date, please reach out to us early and let us know so we can work according to your plan.",
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ).animate().fadeIn(delay: 1000.ms), // Appears last to keep focus on services
+          const SizedBox(height: 50),
+          // ... (Keep your disclaimer code here)
         ],
       ),
     );
   }
+
 
   Widget _buildHowMadeSection(bool isMobile) {
     return Container(
@@ -596,6 +582,132 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
+  Widget _buildFAQSection() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      color: const Color(0xFF0F0F0F),
+      child: Column(
+        children: [
+          const SectionHeader(title: "FAQ", subtitle: "Common Concerns"),
+          const SizedBox(height: 50),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 900),
+            child: Column(
+              children: [
+                // 1. HOW IT'S MADE
+                _faqItem(
+                  "How are these cards crafted?",
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          style: const TextStyle(color: Colors.white70, height: 1.5, fontSize: 16),
+                          children: [
+                            const TextSpan(text: "We are active members of "),
+                            TextSpan(
+                              text: "r/customtradingcard",
+                              style: const TextStyle(color: Color(0xFFD4AF37), decoration: TextDecoration.underline),
+                              recognizer: TapGestureRecognizer()..onTap = () => _launchURL('https://www.reddit.com/r/customtradingcard/'),
+                            ),
+                            const TextSpan(text: ". Our process involves precision-pressing high-quality vinyl sheets onto an authentic Pokémon card base for a genuine feel."),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network('${githubBase}how_cards_made.png', width: 400),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      const Text(
+                        "Note: We use a white marker technique for selective holo. Small air bubbles or slight 'bulges' may occur due to the layering process, though we use silicon blowers to minimize this.",
+                        style: TextStyle(color: Colors.white38, fontSize: 13, fontStyle: FontStyle.italic),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // 2. HANDLING & STORAGE
+                _faqItem(
+                  "How should I care for my custom cards?",
+                  Column(
+                    children: [
+                      _featurePoint("Keep the card in a protective sleeve at all times (included)."),
+                      _featurePoint("Do NOT use wet wipes, as the moisture may smear the premium ink."),
+                      _featurePoint("Avoid direct sunlight for extended periods to prevent fading."),
+                    ],
+                  ),
+                ),
+
+                // 3. AI ART PHILOSOPHY
+                _faqItem(
+                  "What is your philosophy on AI Art?",
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Without this technology, this project wouldn't be possible. While we use Gemini AI to help design unique concepts for pets and people, we understand it isn't for everyone.",
+                        style: TextStyle(color: Colors.white70, height: 1.5, fontSize: 16),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        "If you prefer human-made art, you can provide your own illustrations! We will happily work with your custom files under our 'Provided Art' service tier.",
+                        style: TextStyle(color: Colors.white70, height: 1.5, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // 4. SHIPPING
+                _faqItem(
+                  "Do you ship internationally?",
+                  const Text(
+                    "We currently offer local pickup in Richmond Hill, ON, and shipping within Canada/USA for \$5. For international orders, please DM us on Instagram to discuss rates.",
+                    style: TextStyle(color: Colors.white70, height: 1.5, fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// Updated helper to handle Widgets as answers instead of just Strings
+  Widget _faqItem(String question, Widget answerWidget) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 40),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.help_outline, color: Color(0xFFD4AF37), size: 20),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  question,
+                  style: const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+          Padding(
+            padding: const EdgeInsets.only(left: 32),
+            child: answerWidget,
+          ),
+          const SizedBox(height: 20),
+          const Divider(color: Colors.white10),
+        ],
+      ),
+    );
+  }
+
   // --- WIDGET HELPERS ---
 
   Widget _featurePoint(String text) {
@@ -666,7 +778,7 @@ class _LandingPageState extends State<LandingPage> {
 
   Widget _holoType(String name, String fileName) {
     // Use the same githubBase defined in your class
-     String githubBase = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/refs/heads/main/assets/";
+   //  String githubBase = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/refs/heads/main/assets/";
     final String fullImageUrl = "$githubBase$fileName";
 
     return Container(
@@ -717,7 +829,7 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget _stepCircle(String num, String text, {VoidCallback? onHandleTap}) {
+  Widget _stepCircle(String num, String text, {VoidCallback? onHandleTap, Widget? extra}) {
     return SizedBox(
       width: 200,
       child: Column(
@@ -727,34 +839,37 @@ class _LandingPageState extends State<LandingPage> {
             child: Text(num, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
           ),
           const SizedBox(height: 15),
-
-          // Use RichText to allow partial styling and clicking
           RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
               style: const TextStyle(color: Colors.white, fontSize: 14),
               children: [
-                // Check if it's the Instagram step
                 if (text.contains("@")) ...[
-                  TextSpan(text: text.split("@")[0]), // "DM on Instagram "
+                  TextSpan(text: text.split("@")[0]),
                   TextSpan(
-                    text: "@${text.split("@")[1]}", // "@JLStudios416"
+                    text: "@${text.split("@")[1]}",
                     style: const TextStyle(
-                      color: Colors.white, // Gold link color
+                      color: Color(0xFFD4AF37),
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline,
                     ),
                     recognizer: TapGestureRecognizer()..onTap = onHandleTap,
                   ),
                 ] else
-                  TextSpan(text: text), // Just regular text for other steps
+                  TextSpan(text: text),
               ],
             ),
           ),
+          // This part displays your "Copy Email" button
+          if (extra != null) ...[
+            const SizedBox(height: 10),
+            extra,
+          ],
         ],
       ),
     );
   }
+
   Future<void> _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
       throw Exception('Could not launch $url');
