@@ -1,9 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
-
+import 'dart:async'; // 1. Add this import at the very top of your file
 import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
 
@@ -67,7 +69,7 @@ class _LandingPageState extends State<LandingPage> {
   final GlobalKey _servicesKey = GlobalKey();
   final GlobalKey _holoKey = GlobalKey();
   final GlobalKey _purchaseKey = GlobalKey();
-
+   String githubBase = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/";
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.of(context).size.width < 800;
@@ -75,6 +77,9 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+
+
+
         backgroundColor: Colors.black.withOpacity(0.7),
         elevation: 0,
         title: Text(
@@ -96,11 +101,12 @@ class _LandingPageState extends State<LandingPage> {
             padding: const EdgeInsets.only(right: 10),
             child: InkWell(
               onTap: () => _launchURL('https://instagram.com/JLStudios416'),
-              child: Image.asset(
-                'assets/instagram_logo.png',
+              child: Image.network(
+                '${githubBase}instagram_logo.png', // Switched to network
                 width: 20,
                 height: 20,
                 fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) => const Icon(Icons.link, size: 20),
               ),
             ),
           ),
@@ -123,6 +129,19 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
       ),
+
+      // PASTE THE CODE HERE:
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _launchURL('https://instagram.com/JLStudios416'),
+        backgroundColor: const Color(0xFFD4AF37),
+        icon: const Icon(Icons.send, color: Colors.black),
+        label: const Text(
+            "DM TO ORDER",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)
+        ),
+      ).animate().fadeIn(delay: 10.seconds).slideY(begin: 0.5),
+
+
     );
   }
 
@@ -330,13 +349,13 @@ class _LandingPageState extends State<LandingPage> {
               alignment: WrapAlignment.center,
               // Centers items in the row
               children: [
-                _holoType("Scattered Glass", "assets/scattered_glass.jpg"),
+                _holoType("Scattered Glass", "scattered_glass.jpg"),
                 _holoType(
                   "Reflective Rainbow",
-                  "assets/reflective_rainbow.jpg",
+                  "reflective_rainbow.jpg",
                 ),
-                _holoType("Fine Sparkle", "assets/fine_sprakle.jpg"),
-                _holoType("Scattered Stars", "assets/scattered_stars.jpg"),
+                _holoType("Fine Sparkle", "fine_sprakle.jpg"),
+                _holoType("Scattered Stars", "scattered_stars.jpg"),
               ],
             ),
           ),
@@ -348,7 +367,7 @@ class _LandingPageState extends State<LandingPage> {
   Widget _buildHowToPurchase(bool isMobile, GlobalKey key) {
     return Container(
       key: key,
-      padding: const EdgeInsets.all(80),
+      padding: EdgeInsets.all(isMobile ? 40 : 80),
       color: const Color(0xFF151515),
       child: Column(
         children: [
@@ -360,6 +379,7 @@ class _LandingPageState extends State<LandingPage> {
           Wrap(
             spacing: 20,
             runSpacing: 20,
+            alignment: WrapAlignment.center,
             children: [
               _stepCircle(
                 "1",
@@ -371,6 +391,54 @@ class _LandingPageState extends State<LandingPage> {
               _stepCircle("4", "Production Begins (Ready in ~1 week)"),
             ],
           ),
+          const SizedBox(height: 50),
+
+          // --- SUBTLE DISCLAIMER SECTION ---
+          Container(
+            constraints: const BoxConstraints(maxWidth: 800),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              // Very faint border so it doesn't draw the eye away from the services
+              border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.4)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Muted icon color
+                Icon(
+                    Icons.info_outline,
+                    color: const Color(0xFFD4AF37).withOpacity(0.4),
+                    size: 20
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      // white24 makes this look like secondary "fine print"
+                      style: const TextStyle(
+                          color: Colors.white24,
+                          fontSize: 13,
+                          height: 1.5
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "Disclaimer: ",
+                          style: TextStyle(
+                              color: const Color(0xFFD4AF37).withOpacity(0.4),
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        const TextSpan(
+                          text: "For shipping, delivery times may vary depending on your location and the time of year (it may take a few weeks). If you plan on giving the card as a gift for a specific date, please reach out to us early and let us know so we can work according to your plan.",
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ).animate().fadeIn(delay: 1000.ms), // Appears last to keep focus on services
         ],
       ),
     );
@@ -411,14 +479,23 @@ class _LandingPageState extends State<LandingPage> {
             ),
           ),
           const SizedBox(height: 40),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6), // Adjust this number for more or less curve
-            child: Image.asset(
-              'assets/how_cards_made.png',
-              width: 340,
-              fit: BoxFit.contain,
-            ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Image.network(
+            '${githubBase}how_cards_made.png', // Switched to network
+            width: 340,
+            fit: BoxFit.contain,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return const SizedBox(
+                width: 340,
+                height: 200, // Approximate height while loading
+                child: Center(child: CircularProgressIndicator(color: Color(0xFFD4AF37))),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 50),
           ),
+        ),
           const SizedBox(height: 20),
           const Text(
             "Note: We use a white marker technique for selective holo. Small air bubbles or slight 'bulges' may occur due to the layering process, but we use silicon air blowers and dust covers to minimize these.",
@@ -506,18 +583,13 @@ class _LandingPageState extends State<LandingPage> {
           InkWell(
             onTap: () => _launchURL('https://instagram.com/JLStudios416'),
             borderRadius: BorderRadius.circular(10),
-            // Optional: rounds the splash effect
-
-
-              child: Image.asset(
-                'assets/instagram_logo.png',
-                // Ensure this file is in your assets folder
-                width: 25,
-                height: 25,
-
-                fit: BoxFit.contain,
-              ),
-
+            child: Image.network(
+              '${githubBase}instagram_logo.png', // Switched to network
+              width: 25,
+              height: 25,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) => const Icon(Icons.camera_alt, size: 25),
+            ),
           ),
         ],
       ),
@@ -540,33 +612,63 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Widget _serviceCard(String title, String price, Widget descWidget, IconData icon) {
-    return Container(
-      width: 300,
-      padding: const EdgeInsets.all(30),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, size: 40, color: const Color(0xFFD4AF37)),
-          const SizedBox(height: 20),
-          Text(title,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center
+    return InkWell( // Added InkWell for tap detection
+      onTap: title.contains("Gemini")
+          ? () => Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => const GeminiDetailPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            // Cool transition: Fade + Slide Up + Blur
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: animation.drive(Tween(begin: const Offset(0, 0.1), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
+                child: child,
+              ),
+            );
+          },
+        ),
+      )
+          : null,
+      child: Container(
+        width: 300,
+        padding: const EdgeInsets.all(30),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1A1A),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            // Make the Gemini card border glow slightly to show it is clickable
+            color: title.contains("Gemini") ? const Color(0xFFD4AF37).withOpacity(0.5) : Colors.white10,
+            width: title.contains("Gemini") ? 2 : 1,
           ),
-          Text(price, style: const TextStyle(fontSize: 24, color: Color(0xFFD4AF37))),
-          const SizedBox(height: 15),
-          // Use the widget passed in instead of a plain Text widget
-          descWidget,
-        ],
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 40, color: const Color(0xFFD4AF37)),
+            const SizedBox(height: 20),
+            Text(title,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center),
+            Text(price, style: const TextStyle(fontSize: 24, color: Color(0xFFD4AF37))),
+            const SizedBox(height: 15),
+            descWidget,
+            if (title.contains("Gemini"))
+               Padding(
+                 padding: EdgeInsets.only(top: 10),
+                child: Text("(Click for details)", style: TextStyle(color: Color(0xFFD4AF37), fontSize: 12, fontStyle: FontStyle.italic)),
+              ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _holoType(String name, String imgPath) {
-    // Renamed imgUrl to imgPath for clarity
+  Widget _holoType(String name, String fileName) {
+    // Use the same githubBase defined in your class
+     String githubBase = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/refs/heads/main/assets/";
+    final String fullImageUrl = "$githubBase$fileName";
+
     return Container(
       margin: const EdgeInsets.only(right: 20),
       width: 180,
@@ -575,13 +677,26 @@ class _LandingPageState extends State<LandingPage> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            // Changed Image.network to Image.asset
-            child: Image.asset(
-              imgPath,
+            child: Image.network(
+              fullImageUrl,
               height: 180,
               width: 180,
               fit: BoxFit.cover,
-              // Optional: adds a placeholder if the image fails to load
+              // Shows a spinner while the holo pattern loads
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  height: 180,
+                  width: 180,
+                  color: Colors.white.withOpacity(0.05),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Color(0xFFD4AF37),
+                      strokeWidth: 2,
+                    ),
+                  ),
+                );
+              },
               errorBuilder: (context, error, stackTrace) => Container(
                 height: 180,
                 width: 180,
@@ -589,10 +704,14 @@ class _LandingPageState extends State<LandingPage> {
                 child: const Icon(Icons.broken_image, color: Colors.white24),
               ),
             ),
-          ),
+          ).animate(onPlay: (controller) => controller.repeat()) // This repeats the glint
+              .shimmer(delay: 4000.ms, duration: 1800.ms, color: Colors.white24), // The actual "flash"
           const SizedBox(height: 10),
-          Text(name,textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
-
+          Text(
+            name,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -687,52 +806,104 @@ class CardSlideshow extends StatefulWidget {
 
 class _CardSlideshowState extends State<CardSlideshow> {
   final PageController _pageController = PageController();
+  Timer? _timer; // 2. Declare a Timer variable
+   String githubBase = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/refs/heads/main/assets/";
 
-  final List<String> cardImages = [
-    'assets/elsie.png',
-    'assets/charizard1.jpg',
-    'assets/rowan.jpg',
-    'assets/pikachu.jpg',
-    'assets/vlad.jpg',
-    'assets/charizard.jpg',
-    'assets/jason.png',
-    'assets/espeon.png',
-    'assets/hiro.jpg',
-    'assets/charizard_with_stand.jpg',
-    'assets/serena.jpg',
-    'assets/raz.jpg',
-    'assets/philip.jpg',
-    'assets/costco.jpg',
+  late final List<String> cardImages = [
+    '${githubBase}elsie.png',
+    '${githubBase}charizard1.jpg',
+    '${githubBase}rowan.jpg',
+    '${githubBase}pikachu.jpg',
+    '${githubBase}vlad.jpg',
+    '${githubBase}charizard.jpg',
+    '${githubBase}jason.png',
+    '${githubBase}espeon.png',
+    '${githubBase}hiro.jpg',
+    '${githubBase}charizard_with_stand.jpg',
+    '${githubBase}serena.jpg',
+    '${githubBase}raz.jpg',
+    '${githubBase}philip.jpg',
+    '${githubBase}costco.jpg',
   ];
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 10), _autoPlay);
+    _startTimer(); // 3. Start the initial timer
+    //Future.delayed(const Duration(seconds: 10), _autoPlay);
   }
 
-  void _autoPlay() {
-    if (_pageController.hasClients) {
-      int nextPage = (_pageController.page!.toInt() + 1) % cardImages.length;
-      _pageController.animateToPage(
-        nextPage,
-        duration: const Duration(milliseconds: 800),
-        curve: Curves.easeInOut,
-      );
-    }
-    Future.delayed(const Duration(seconds: 6), _autoPlay); // Slightly faster auto-play
+  @override
+  void dispose() {
+    _timer?.cancel(); // 4. Always cancel timers when the widget is destroyed
+    _pageController.dispose();
+    super.dispose();
   }
 
-  // Navigation Logic
+  // 5. This handles the auto-play logic and the "Reset"
+  void _startTimer() {
+    _timer?.cancel(); // Stop the current countdown
+    _timer = Timer.periodic(const Duration(seconds: 6), (timer) {
+      if (_pageController.hasClients) {
+        int nextPage = (_pageController.page!.toInt() + 1) % cardImages.length;
+        _pageController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+
+  // 6. Navigation Logic now includes a call to _startTimer()
   void _moveNext() {
-    _pageController.nextPage(
-        duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+    if (_pageController.hasClients) {
+      _pageController.nextPage(
+          duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+      _startTimer(); // This resets the 6-second clock
+    }
   }
 
   void _movePrevious() {
-    _pageController.previousPage(
-        duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+    if (_pageController.hasClients) {
+      _pageController.previousPage(
+          duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+      _startTimer(); // This resets the 6-second clock
+    }
   }
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // 1. UI Elements (The first things users see)
+    precacheImage(NetworkImage('${githubBase}instagram_logo.png'), context);
+    precacheImage(NetworkImage('${githubBase}how_cards_made.png'), context);
+
+    // 2. Slideshow Images
+    // We use the list you already defined
+    for (String url in cardImages) {
+      precacheImage(NetworkImage(url), context);
+    }
+
+    // 3. Holo Pattern Images
+    List<String> holoFiles = [
+      "scattered_glass.jpg",
+      "reflective_rainbow.jpg",
+      "fine_sprakle.jpg",
+      "scattered_stars.jpg",
+    ];
+
+    for (String fileName in holoFiles) {
+      precacheImage(NetworkImage('$githubBase$fileName'), context);
+    }
+  }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -751,7 +922,22 @@ class _CardSlideshowState extends State<CardSlideshow> {
               controller: _pageController,
               itemCount: cardImages.length,
               itemBuilder: (context, index) {
-                return Image.asset(cardImages[index], fit: BoxFit.contain);
+                return Image.network(
+                  cardImages[index],
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child; // Image is finished loading
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: const Color(0xFFD4AF37),
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, color: Colors.red),
+                );
               },
             ),
 
@@ -796,6 +982,112 @@ class _CardSlideshowState extends State<CardSlideshow> {
       child: IconButton(
         icon: Icon(icon, color: const Color(0xFFD4AF37), size: 24),
         onPressed: onPressed,
+      ),
+    );
+  }
+}
+
+//=====================================
+
+class GeminiDetailPage extends StatelessWidget {
+  const GeminiDetailPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // You can swap this with a specific reference image URL from your GitHub
+    const String refCardUrl = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/vlad.jpg";
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text("Gemini AI Custom Service"),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(30),
+        child: Column(
+          children: [
+            // Reference Image with a glow effect
+            Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFD4AF37).withOpacity(0.3),
+                      blurRadius: 20,
+                      spreadRadius: 5,
+                    )
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.network(refCardUrl, height: 400, fit: BoxFit.contain),
+                ),
+              ),
+            ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms),
+
+            const SizedBox(height: 40),
+
+            // Text Content
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _infoSection("Process", "Please provide as much information as possible, including reference images of the person and/or pet, full-art design details. Also, include the following card information below. I’ll generate the design using an AI prompt, guiding you throughout the process to ensure it turns out perfect."),
+                const SizedBox(height: 20),
+                _bulletPoint("Card Name"),
+                _bulletPoint("Energy Type & Card HP"),
+                // Updated points for Attack/Ability
+                _bulletPoint("Attack/Ability names, descriptions, energy type and cost, and damage amounts. (We recommend including only one ability or attack to prevent your full art to be covered.)"),
+
+
+                _bulletPoint("Weakness, Resistance, and Retreat Cost"),
+
+                const SizedBox(height: 20),
+                _infoSection("A Note on Specificity", "We are happy to do minor edits on the generated image. When requesting edits, please be as specific as possible, as it takes time for us to make changes to an image. For example, we once had a customer ask us to 'make the ear brown', but after a day, it turned out to be a typo; they meant 'make the beard brown'."),
+              ],
+            ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
+
+            const SizedBox(height: 50),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFD4AF37),
+                foregroundColor: Colors.black,
+              ),
+              onPressed: () => Navigator.pop(context),
+              child: const Text("BACK TO SERVICES"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _infoSection(String title, String body) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title.toUpperCase(), style: const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+        const SizedBox(height: 8),
+        Text(body, style: const TextStyle(fontSize: 16, height: 1.5, color: Colors.white70)),
+      ],
+    );
+  }
+
+  Widget _bulletPoint(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0), // Increased spacing for readability
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start, // Align icon with the top of the text
+        children: [
+          const Icon(Icons.auto_awesome, color: Color(0xFFD4AF37), size: 16),
+          const SizedBox(width: 10),
+          Expanded(
+              child: Text(
+                  text,
+                  style: const TextStyle(fontSize: 15, height: 1.4, color: Colors.white)
+              )
+          ),
+        ],
       ),
     );
   }
