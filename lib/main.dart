@@ -8,22 +8,20 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:async'; // 1. Add this import at the very top of your file
 import 'package:firebase_core/firebase_core.dart';
+
 Future<void> main() async {
-
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: const FirebaseOptions(
-        apiKey: "AIzaSyCYkT62xc7bvkUvszzqlNIps2w1i-DTiCs",
-        authDomain: "jlstudios-custom-cards.firebaseapp.com",
-        projectId: "jlstudios-custom-cards",
-        storageBucket: "jlstudios-custom-cards.firebasestorage.app",
-        messagingSenderId: "517030096782",
-        appId: "1:517030096782:web:e822239c2e58751f5cfedf",
-        measurementId: "G-6DD22GDJYP"
+      apiKey: "AIzaSyCYkT62xc7bvkUvszzqlNIps2w1i-DTiCs",
+      authDomain: "jlstudios-custom-cards.firebaseapp.com",
+      projectId: "jlstudios-custom-cards",
+      storageBucket: "jlstudios-custom-cards.firebasestorage.app",
+      messagingSenderId: "517030096782",
+      appId: "1:517030096782:web:e822239c2e58751f5cfedf",
+      measurementId: "G-6DD22GDJYP",
     ),
   );
-
 
   runApp(const JLStudiosApp());
 }
@@ -70,7 +68,11 @@ class _LandingPageState extends State<LandingPage> {
   final GlobalKey _servicesKey = GlobalKey();
   final GlobalKey _holoKey = GlobalKey();
   final GlobalKey _purchaseKey = GlobalKey();
-   String githubBase = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/";
+  final GlobalKey _faqKey = GlobalKey();
+
+  String githubBase =
+      "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/";
+
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.of(context).size.width < 800;
@@ -78,15 +80,16 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.black.withOpacity(0.4), // More transparent
-    elevation: 0,
-    flexibleSpace: ClipRect(
-    child: BackdropFilter(
-    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // The "Frosted" look
-    child: Container(color: Colors.transparent),
-    ),
-    ),
-
+        backgroundColor: Colors.black.withOpacity(0.4),
+        // More transparent
+        elevation: 0,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            // The "Frosted" look
+            child: Container(color: Colors.transparent),
+          ),
+        ),
 
         title: Text(
           'JLStudios',
@@ -101,6 +104,7 @@ class _LandingPageState extends State<LandingPage> {
             _navButton("Our Services", _servicesKey),
             _navButton("Holo Patterns", _holoKey),
             _navButton("Order Now", _purchaseKey),
+            _navButton("FAQ", _faqKey),
           ],
           // Replace the old IconButton with this:
           Padding(
@@ -112,7 +116,8 @@ class _LandingPageState extends State<LandingPage> {
                 width: 20,
                 height: 20,
                 fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) => const Icon(Icons.link, size: 20),
+                errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.link, size: 20),
               ),
             ),
           ),
@@ -128,11 +133,11 @@ class _LandingPageState extends State<LandingPage> {
             _buildServicesSection(isMobile, _servicesKey),
             _buildHoloSelector(_holoKey),
             _buildHowToPurchase(isMobile, _purchaseKey),
+            _buildFAQSection(_faqKey), // Pass the key here
+
             //_buildHowMadeSection(isMobile),
             //_buildCareTips(),
             //_buildAIFeedback(),
-
-            _buildFAQSection(),
             _buildFooter(),
           ],
         ),
@@ -144,12 +149,10 @@ class _LandingPageState extends State<LandingPage> {
         backgroundColor: const Color(0xFFD4AF37),
         icon: const Icon(Icons.send, color: Colors.black),
         label: const Text(
-            "DM TO ORDER",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)
+          "DM TO ORDER",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ).animate().fadeIn(delay: 10.seconds).slideY(begin: 0.5),
-
-
     );
   }
 
@@ -269,21 +272,40 @@ class _LandingPageState extends State<LandingPage> {
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    style: const TextStyle(color: Colors.grey, fontSize: 14, height: 1.5),
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
                     children: [
-                      const TextSpan(text: "We recommend selecting a full art Pokémon card. You can find the complete list of TCGP Pokémon from the game "),
-                      TextSpan(
-                        text: "here",
-                        style: const TextStyle(color: Color(0xFFF6E05E), decoration: TextDecoration.underline),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () => _launchURL('https://www.pokemon-zone.com/cards/'),
+                      const TextSpan(
+                        text:
+                            "We recommend selecting a full art Pokémon card. You can find the complete list of TCGP Pokémon from the game ",
                       ),
-                      const TextSpan(text: ". For Pokémon cards not from the game, you can find the list "),
                       TextSpan(
                         text: "here",
-                        style: const TextStyle(color: Color(0xFFF6E05E), decoration: TextDecoration.underline),
+                        style: const TextStyle(
+                          color: Color(0xFFF6E05E),
+                          decoration: TextDecoration.underline,
+                        ),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () => _launchURL('https://www.pokemon.com/us/pokemon-tcg/pokemon-cards'),
+                          ..onTap = () =>
+                              _launchURL('https://www.pokemon-zone.com/cards/'),
+                      ),
+                      const TextSpan(
+                        text:
+                            ". For Pokémon cards not from the game, you can find the list ",
+                      ),
+                      TextSpan(
+                        text: "here",
+                        style: const TextStyle(
+                          color: Color(0xFFF6E05E),
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _launchURL(
+                            'https://www.pokemon.com/us/pokemon-tcg/pokemon-cards',
+                          ),
                       ),
                       const TextSpan(text: "."),
                     ],
@@ -358,10 +380,7 @@ class _LandingPageState extends State<LandingPage> {
               // Centers items in the row
               children: [
                 _holoType("Scattered Glass", "scattered_glass.jpg"),
-                _holoType(
-                  "Reflective Rainbow",
-                  "reflective_rainbow.jpg",
-                ),
+                _holoType("Reflective Rainbow", "reflective_rainbow.jpg"),
                 _holoType("Fine Sparkle", "fine_sprakle.jpg"),
                 _holoType("Scattered Stars", "scattered_stars.jpg"),
               ],
@@ -392,9 +411,13 @@ class _LandingPageState extends State<LandingPage> {
               _stepCircle(
                 "1",
                 "DM us on Instagram @JLStudios416",
-                onHandleTap: () => _launchURL('https://instagram.com/JLStudios416'),
+                onHandleTap: () =>
+                    _launchURL('https://instagram.com/JLStudios416'),
               ),
-              _stepCircle("2", "Choose Pickup (Richmond Hill, ON) or Shipping (\$5)"),
+              _stepCircle(
+                "2",
+                "Choose Pickup (Richmond Hill, ON) or Shipping (\$5)",
+              ),
 
               // --- UPDATED STEP 3 ---
               _stepCircle(
@@ -402,7 +425,9 @@ class _LandingPageState extends State<LandingPage> {
                 "Payment in Full via E-Transfer",
                 extra: TextButton.icon(
                   onPressed: () {
-                    Clipboard.setData(const ClipboardData(text: "jonathanlam@hotmail.ca"));
+                    Clipboard.setData(
+                      const ClipboardData(text: "jonathanlam@hotmail.ca"),
+                    );
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Email copied to clipboard!"),
@@ -410,10 +435,14 @@ class _LandingPageState extends State<LandingPage> {
                       ),
                     );
                   },
-                  icon: const Icon(Icons.copy, size: 14, color: Color(0xFFD4AF37)),
+                  icon: const Icon(
+                    Icons.copy,
+                    size: 14,
+                    color: Color(0xFFD4AF37),
+                  ),
                   label: const Text(
-                      "Copy E-transfer Email",
-                      style: TextStyle(color: Colors.white70, fontSize: 12)
+                    "Copy E-transfer Email",
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                 ),
               ),
@@ -429,7 +458,6 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-
   Widget _buildHowMadeSection(bool isMobile) {
     return Container(
       padding: const EdgeInsets.all(60),
@@ -444,44 +472,55 @@ class _LandingPageState extends State<LandingPage> {
             textAlign: TextAlign.center,
             text: TextSpan(
               // Default style for the whole sentence
-              style: const TextStyle(fontSize: 16, color: Colors.white, height: 1.5),
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+                height: 1.5,
+              ),
               children: [
                 const TextSpan(text: "We are active members of "),
                 TextSpan(
                   text: "r/customtradingcard",
                   style: const TextStyle(
-                    color: Colors.white, // Using the lighter yellow we discussed
+                    color: Colors.white,
+                    // Using the lighter yellow we discussed
                     fontWeight: FontWeight.bold,
                     decoration: TextDecoration.underline,
                   ),
                   // This makes it clickable
                   recognizer: TapGestureRecognizer()
-                    ..onTap = () => _launchURL('https://www.reddit.com/r/customtradingcard/'),
+                    ..onTap = () => _launchURL(
+                      'https://www.reddit.com/r/customtradingcard/',
+                    ),
                 ),
                 const TextSpan(
-                  text: ". Our process involves pressing two vinyl sheets onto a real Pokémon card base.",
+                  text:
+                      ". Our process involves pressing two vinyl sheets onto a real Pokémon card base.",
                 ),
               ],
             ),
           ),
           const SizedBox(height: 40),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(6),
-          child: Image.network(
-            '${githubBase}how_cards_made.png', // Switched to network
-            width: 340,
-            fit: BoxFit.contain,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return const SizedBox(
-                width: 340,
-                height: 200, // Approximate height while loading
-                child: Center(child: CircularProgressIndicator(color: Color(0xFFD4AF37))),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 50),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Image.network(
+              '${githubBase}how_cards_made.png', // Switched to network
+              width: 340,
+              fit: BoxFit.contain,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const SizedBox(
+                  width: 340,
+                  height: 200, // Approximate height while loading
+                  child: Center(
+                    child: CircularProgressIndicator(color: Color(0xFFD4AF37)),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.broken_image, size: 50),
+            ),
           ),
-        ),
           const SizedBox(height: 20),
           const Text(
             "Note: We use a white marker technique for selective holo. Small air bubbles or slight 'bulges' may occur due to the layering process, but we use silicon air blowers and dust covers to minimize these.",
@@ -555,6 +594,7 @@ class _LandingPageState extends State<LandingPage> {
       ),
     );
   }
+
   Widget _buildFooter() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 40),
@@ -574,7 +614,8 @@ class _LandingPageState extends State<LandingPage> {
               width: 25,
               height: 25,
               fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) => const Icon(Icons.camera_alt, size: 25),
+              errorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.camera_alt, size: 25),
             ),
           ),
         ],
@@ -582,9 +623,11 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget _buildFAQSection() {
+  Widget _buildFAQSection(GlobalKey key) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      key: key, // Attach the key here
+      // Reduced bottom padding from 80 to 0 to fix the extra spacing
+      padding: const EdgeInsets.only(top: 80, bottom: 0, left: 20, right: 20),
       color: const Color(0xFF0F0F0F),
       child: Column(
         children: [
@@ -602,15 +645,28 @@ class _LandingPageState extends State<LandingPage> {
                     children: [
                       RichText(
                         text: TextSpan(
-                          style: const TextStyle(color: Colors.white70, height: 1.5, fontSize: 16),
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            height: 1.5,
+                            fontSize: 16,
+                          ),
                           children: [
                             const TextSpan(text: "We are active members of "),
                             TextSpan(
                               text: "r/customtradingcard",
-                              style: const TextStyle(color: Color(0xFFD4AF37), decoration: TextDecoration.underline),
-                              recognizer: TapGestureRecognizer()..onTap = () => _launchURL('https://www.reddit.com/r/customtradingcard/'),
+                              style: const TextStyle(
+                                color: Color(0xFFD4AF37),
+                                decoration: TextDecoration.underline,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => _launchURL(
+                                  'https://www.reddit.com/r/customtradingcard/',
+                                ),
                             ),
-                            const TextSpan(text: ". Our process involves precision-pressing high-quality vinyl sheets onto an authentic Pokémon card base for a genuine feel."),
+                            const TextSpan(
+                              text:
+                                  ". Our process involves precision-pressing high-quality vinyl sheets onto an authentic Pokémon card base for a genuine feel.",
+                            ),
                           ],
                         ),
                       ),
@@ -618,13 +674,20 @@ class _LandingPageState extends State<LandingPage> {
                       Center(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
-                          child: Image.network('${githubBase}how_cards_made.png', width: 400),
+                          child: Image.network(
+                            '${githubBase}how_cards_made.png',
+                            width: 400,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 15),
                       const Text(
                         "Note: We use a white marker technique for selective holo. Small air bubbles or slight 'bulges' may occur due to the layering process, though we use silicon blowers to minimize this.",
-                        style: TextStyle(color: Colors.white38, fontSize: 13, fontStyle: FontStyle.italic),
+                        style: TextStyle(
+                          color: Colors.white38,
+                          fontSize: 13,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ],
                   ),
@@ -635,9 +698,15 @@ class _LandingPageState extends State<LandingPage> {
                   "How should I care for my custom cards?",
                   Column(
                     children: [
-                      _featurePoint("Keep the card in a protective sleeve at all times (included)."),
-                      _featurePoint("Do NOT use wet wipes, as the moisture may smear the premium ink."),
-                      _featurePoint("Avoid direct sunlight for extended periods to prevent fading."),
+                      _featurePoint(
+                        "Keep the card in a protective sleeve at all times (included).",
+                      ),
+                      _featurePoint(
+                        "Do NOT use wet wipes, as the moisture may smear the premium ink.",
+                      ),
+                      _featurePoint(
+                        "Avoid direct sunlight for extended periods to prevent fading.",
+                      ),
                     ],
                   ),
                 ),
@@ -650,12 +719,20 @@ class _LandingPageState extends State<LandingPage> {
                     children: [
                       const Text(
                         "Without this technology, this project wouldn't be possible. While we use Gemini AI to help design unique concepts for pets and people, we understand it isn't for everyone.",
-                        style: TextStyle(color: Colors.white70, height: 1.5, fontSize: 16),
+                        style: TextStyle(
+                          color: Colors.white70,
+                          height: 1.5,
+                          fontSize: 16,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       const Text(
                         "If you prefer human-made art, you can provide your own illustrations! We will happily work with your custom files under our 'Provided Art' service tier.",
-                        style: TextStyle(color: Colors.white70, height: 1.5, fontSize: 16),
+                        style: TextStyle(
+                          color: Colors.white70,
+                          height: 1.5,
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),
@@ -664,11 +741,26 @@ class _LandingPageState extends State<LandingPage> {
                 // 4. SHIPPING
                 _faqItem(
                   "Do you ship internationally?",
+
                   const Text(
                     "We currently offer local pickup in Richmond Hill, ON, and shipping within Canada/USA for \$5. For international orders, please DM us on Instagram to discuss rates.",
-                    style: TextStyle(color: Colors.white70, height: 1.5, fontSize: 16),
+                    style: TextStyle(
+                      color: Colors.white70,
+                      height: 1.5,
+                      fontSize: 16,
+                    ),
                   ),
+                 // isLast: true, // Add this flag to the last item
                 ),
+// 5. SHIPPING TIME
+                _faqItem(
+                  "How long does shipping take?",
+                  const Text(
+                    "Delivery times may vary depending on your location and the time of year (it may take a few weeks). If you plan on giving the card as a gift for a specific date, please reach out to us early and let us know so we can work according to your plan.",
+                    style: TextStyle(color: Colors.white70, height: 1.5, fontSize: 16),
+                  ),isLast: true, // Add this flag to the last item
+                ),
+
               ],
             ),
           ),
@@ -677,21 +769,29 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-// Updated helper to handle Widgets as answers instead of just Strings
-  Widget _faqItem(String question, Widget answerWidget) {
+  Widget _faqItem(String question, Widget answerWidget, {bool isLast = false}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 40),
+      padding: EdgeInsets.only(bottom: isLast ? 20 : 40),
+      // Tighter spacing for the last item
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.help_outline, color: Color(0xFFD4AF37), size: 20),
+              const Icon(
+                Icons.help_outline,
+                color: Color(0xFFD4AF37),
+                size: 20,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   question,
-                  style: const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.bold, fontSize: 20),
+                  style: const TextStyle(
+                    color: Color(0xFFD4AF37),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
               ),
             ],
@@ -701,8 +801,11 @@ class _LandingPageState extends State<LandingPage> {
             padding: const EdgeInsets.only(left: 32),
             child: answerWidget,
           ),
-          const SizedBox(height: 20),
-          const Divider(color: Colors.white10),
+          if (!isLast) ...[
+            // Only show divider if it's NOT the last item
+            const SizedBox(height: 20),
+            const Divider(color: Colors.white10),
+          ],
         ],
       ),
     );
@@ -723,25 +826,38 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget _serviceCard(String title, String price, Widget descWidget, IconData icon) {
-    return InkWell( // Added InkWell for tap detection
+  Widget _serviceCard(
+    String title,
+    String price,
+    Widget descWidget,
+    IconData icon,
+  ) {
+    return InkWell(
+      // Added InkWell for tap detection
       onTap: title.contains("Gemini")
           ? () => Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => const GeminiDetailPage(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            // Cool transition: Fade + Slide Up + Blur
-            return FadeTransition(
-              opacity: animation,
-              child: SlideTransition(
-                position: animation.drive(Tween(begin: const Offset(0, 0.1), end: Offset.zero).chain(CurveTween(curve: Curves.easeOutCubic))),
-                child: child,
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    const GeminiDetailPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      // Cool transition: Fade + Slide Up + Blur
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: animation.drive(
+                            Tween(
+                              begin: const Offset(0, 0.1),
+                              end: Offset.zero,
+                            ).chain(CurveTween(curve: Curves.easeOutCubic)),
+                          ),
+                          child: child,
+                        ),
+                      );
+                    },
               ),
-            );
-          },
-        ),
-      )
+            )
           : null,
       child: Container(
         width: 300,
@@ -751,7 +867,9 @@ class _LandingPageState extends State<LandingPage> {
           borderRadius: BorderRadius.circular(15),
           border: Border.all(
             // Make the Gemini card border glow slightly to show it is clickable
-            color: title.contains("Gemini") ? const Color(0xFFD4AF37).withOpacity(0.5) : Colors.white10,
+            color: title.contains("Gemini")
+                ? const Color(0xFFD4AF37).withOpacity(0.5)
+                : Colors.white10,
             width: title.contains("Gemini") ? 2 : 1,
           ),
         ),
@@ -759,16 +877,28 @@ class _LandingPageState extends State<LandingPage> {
           children: [
             Icon(icon, size: 40, color: const Color(0xFFD4AF37)),
             const SizedBox(height: 20),
-            Text(title,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center),
-            Text(price, style: const TextStyle(fontSize: 24, color: Color(0xFFD4AF37))),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              price,
+              style: const TextStyle(fontSize: 24, color: Color(0xFFD4AF37)),
+            ),
             const SizedBox(height: 15),
             descWidget,
             if (title.contains("Gemini"))
-               Padding(
-                 padding: EdgeInsets.only(top: 10),
-                child: Text("(Click for details)", style: TextStyle(color: Color(0xFFD4AF37), fontSize: 12, fontStyle: FontStyle.italic)),
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Text(
+                  "(Click for details)",
+                  style: TextStyle(
+                    color: Color(0xFFD4AF37),
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ),
           ],
         ),
@@ -778,7 +908,7 @@ class _LandingPageState extends State<LandingPage> {
 
   Widget _holoType(String name, String fileName) {
     // Use the same githubBase defined in your class
-   //  String githubBase = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/refs/heads/main/assets/";
+    //  String githubBase = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/refs/heads/main/assets/";
     final String fullImageUrl = "$githubBase$fileName";
 
     return Container(
@@ -788,36 +918,47 @@ class _LandingPageState extends State<LandingPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              fullImageUrl,
-              height: 180,
-              width: 180,
-              fit: BoxFit.cover,
-              // Shows a spinner while the holo pattern loads
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  fullImageUrl,
                   height: 180,
                   width: 180,
-                  color: Colors.white.withOpacity(0.05),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: Color(0xFFD4AF37),
-                      strokeWidth: 2,
+                  fit: BoxFit.cover,
+                  // Shows a spinner while the holo pattern loads
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      height: 180,
+                      width: 180,
+                      color: Colors.white.withOpacity(0.05),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFFD4AF37),
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    height: 180,
+                    width: 180,
+                    color: Colors.grey[900],
+                    child: const Icon(
+                      Icons.broken_image,
+                      color: Colors.white24,
                     ),
                   ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) => Container(
-                height: 180,
-                width: 180,
-                color: Colors.grey[900],
-                child: const Icon(Icons.broken_image, color: Colors.white24),
+                ),
+              )
+              .animate(
+                onPlay: (controller) => controller.repeat(),
+              ) // This repeats the glint
+              .shimmer(
+                delay: 4000.ms,
+                duration: 1800.ms,
+                color: Colors.white24,
               ),
-            ),
-          ).animate(onPlay: (controller) => controller.repeat()) // This repeats the glint
-              .shimmer(delay: 4000.ms, duration: 1800.ms, color: Colors.white24), // The actual "flash"
+          // The actual "flash"
           const SizedBox(height: 10),
           Text(
             name,
@@ -829,14 +970,25 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget _stepCircle(String num, String text, {VoidCallback? onHandleTap, Widget? extra}) {
+  Widget _stepCircle(
+    String num,
+    String text, {
+    VoidCallback? onHandleTap,
+    Widget? extra,
+  }) {
     return SizedBox(
       width: 200,
       child: Column(
         children: [
           CircleAvatar(
             backgroundColor: const Color(0xFFD4AF37),
-            child: Text(num, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+            child: Text(
+              num,
+              style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
           const SizedBox(height: 15),
           RichText(
@@ -861,10 +1013,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
           ),
           // This part displays your "Copy Email" button
-          if (extra != null) ...[
-            const SizedBox(height: 10),
-            extra,
-          ],
+          if (extra != null) ...[const SizedBox(height: 10), extra],
         ],
       ),
     );
@@ -922,7 +1071,8 @@ class CardSlideshow extends StatefulWidget {
 class _CardSlideshowState extends State<CardSlideshow> {
   final PageController _pageController = PageController();
   Timer? _timer; // 2. Declare a Timer variable
-   String githubBase = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/refs/heads/main/assets/";
+  String githubBase =
+      "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/refs/heads/main/assets/";
 
   late final List<String> cardImages = [
     '${githubBase}elsie.png',
@@ -970,12 +1120,13 @@ class _CardSlideshowState extends State<CardSlideshow> {
     });
   }
 
-
   // 6. Navigation Logic now includes a call to _startTimer()
   void _moveNext() {
     if (_pageController.hasClients) {
       _pageController.nextPage(
-          duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOut,
+      );
       _startTimer(); // This resets the 6-second clock
     }
   }
@@ -983,11 +1134,12 @@ class _CardSlideshowState extends State<CardSlideshow> {
   void _movePrevious() {
     if (_pageController.hasClients) {
       _pageController.previousPage(
-          duration: const Duration(milliseconds: 500), curve: Curves.easeOut);
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOut,
+      );
       _startTimer(); // This resets the 6-second clock
     }
   }
-
 
   @override
   void didChangeDependencies() {
@@ -1016,10 +1168,6 @@ class _CardSlideshowState extends State<CardSlideshow> {
     }
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1041,17 +1189,20 @@ class _CardSlideshowState extends State<CardSlideshow> {
                   cardImages[index],
                   fit: BoxFit.contain,
                   loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child; // Image is finished loading
+                    if (loadingProgress == null)
+                      return child; // Image is finished loading
                     return Center(
                       child: CircularProgressIndicator(
                         color: const Color(0xFFD4AF37),
                         value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
                             : null,
                       ),
                     );
                   },
-                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, color: Colors.red),
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.broken_image, color: Colors.red),
                 );
               },
             ),
@@ -1110,7 +1261,8 @@ class GeminiDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // You can swap this with a specific reference image URL from your GitHub
-    const String refCardUrl = "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/vlad.jpg";
+    const String refCardUrl =
+        "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/vlad.jpg";
 
     return Scaffold(
       appBar: AppBar(
@@ -1131,12 +1283,16 @@ class GeminiDetailPage extends StatelessWidget {
                       color: const Color(0xFFD4AF37).withOpacity(0.3),
                       blurRadius: 20,
                       spreadRadius: 5,
-                    )
+                    ),
                   ],
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: Image.network(refCardUrl, height: 400, fit: BoxFit.contain),
+                  child: Image.network(
+                    refCardUrl,
+                    height: 400,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms),
@@ -1147,18 +1303,25 @@ class GeminiDetailPage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _infoSection("Process", "Please provide as much information as possible, including reference images of the person and/or pet, full-art design details. Also, include the following card information below. I’ll generate the design using an AI prompt, guiding you throughout the process to ensure it turns out perfect."),
+                _infoSection(
+                  "Process",
+                  "Please provide as much information as possible, including reference images of the person and/or pet, full-art design details. Also, include the following card information below. I’ll generate the design using an AI prompt, guiding you throughout the process to ensure it turns out perfect.",
+                ),
                 const SizedBox(height: 20),
                 _bulletPoint("Card Name"),
                 _bulletPoint("Energy Type & Card HP"),
                 // Updated points for Attack/Ability
-                _bulletPoint("Attack/Ability names, descriptions, energy type and cost, and damage amounts. (We recommend including only one ability or attack to prevent your full art to be covered.)"),
-
+                _bulletPoint(
+                  "Attack/Ability names, descriptions, energy type and cost, and damage amounts. (We recommend including only one ability or attack to prevent your full art to be covered.)",
+                ),
 
                 _bulletPoint("Weakness, Resistance, and Retreat Cost"),
 
                 const SizedBox(height: 20),
-                _infoSection("A Note on Specificity", "We are happy to do minor edits on the generated image. When requesting edits, please be as specific as possible, as it takes time for us to make changes to an image. For example, we once had a customer ask us to 'make the ear brown', but after a day, it turned out to be a typo; they meant 'make the beard brown'."),
+                _infoSection(
+                  "A Note on Specificity",
+                  "We are happy to do minor edits on the generated image. When requesting edits, please be as specific as possible, as it takes time for us to make changes to an image. For example, we once had a customer ask us to 'make the ear brown', but after a day, it turned out to be a typo; they meant 'make the beard brown'.",
+                ),
               ],
             ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
 
@@ -1181,26 +1344,46 @@ class GeminiDetailPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title.toUpperCase(), style: const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+        Text(
+          title.toUpperCase(),
+          style: const TextStyle(
+            color: Color(0xFFD4AF37),
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+          ),
+        ),
         const SizedBox(height: 8),
-        Text(body, style: const TextStyle(fontSize: 16, height: 1.5, color: Colors.white70)),
+        Text(
+          body,
+          style: const TextStyle(
+            fontSize: 16,
+            height: 1.5,
+            color: Colors.white70,
+          ),
+        ),
       ],
     );
   }
 
   Widget _bulletPoint(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0), // Increased spacing for readability
+      padding: const EdgeInsets.only(bottom: 12.0),
+      // Increased spacing for readability
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start, // Align icon with the top of the text
+        crossAxisAlignment: CrossAxisAlignment.start,
+        // Align icon with the top of the text
         children: [
           const Icon(Icons.auto_awesome, color: Color(0xFFD4AF37), size: 16),
           const SizedBox(width: 10),
           Expanded(
-              child: Text(
-                  text,
-                  style: const TextStyle(fontSize: 15, height: 1.4, color: Colors.white)
-              )
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 15,
+                height: 1.4,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
