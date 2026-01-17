@@ -685,7 +685,7 @@ class _LandingPageState extends State<LandingPage> {
                       ),
                       const SizedBox(height: 15),
                       const Text(
-                        "Note: We use a white marker technique for selective holo. Small air bubbles or slight 'bulges' may occur due to the layering process, though we use silicon blowers to minimize this.",
+                        "Note: We use a specialized white-ink technique to selectively mask the holographic effects. Due to this advanced layering process, minor air bubbles may occur; however, we use silicon compression tools during production to ensure these variations are kept to an absolute minimum for a premium finish. Additionally, a slightly raised texture will occur on the selective mask area.",
                         style: TextStyle(
                           color: Colors.white38,
                           fontSize: 13,
