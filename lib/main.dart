@@ -674,9 +674,12 @@ class _LandingPageState extends State<LandingPage> {
                       Center(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            '${githubBase}how_cards_made.png',
-                            width: 400,
+                          child: Opacity(
+                            opacity: 0.7, // 0.7 represents 70% opacity
+                            child: Image.network(
+                              '${githubBase}how_cards_made.png',
+                              width: 400,
+                            ),
                           ),
                         ),
                       ),
