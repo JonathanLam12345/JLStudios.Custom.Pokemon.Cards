@@ -124,7 +124,19 @@ class _LandingPageState extends State<LandingPage> {
           const SizedBox(width: 10),
         ],
       ),
-      body: SingleChildScrollView(
+      body:
+
+      Stack(
+          children: [
+          // 1. The Fixed Background Star Layer
+          Positioned.fill(
+          child: _buildGlobalStarField(),
+
+    ),
+
+
+
+      SingleChildScrollView(
         controller: _scrollController,
         child: Column(
           children: [
@@ -142,6 +154,8 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
       ),
+      ],
+    ),
 
       // PASTE THE CODE HERE:
       floatingActionButton: FloatingActionButton.extended(
@@ -165,51 +179,110 @@ class _LandingPageState extends State<LandingPage> {
 
   // --- SECTION BUILDERS ---
 
+  Widget _buildGlobalStarField() {
+    return IgnorePointer(
+      child: Stack(
+        children: List.generate(200, (index) {
+          // Distributes stars across a wide area (height up to 5000px)
+          final double top = (index * 163.7) % 5000;
+          final double left = (index * 224.7) % 1500;
+
+          // Increased opacity range: from 15% to 45% visibility
+          final double opacity = 0.01 + (index % 10) * 0.03;
+
+          return Positioned(
+            top: top,
+            left: left,
+            child: Icon(
+              Icons.auto_awesome,
+              color: Colors.white.withOpacity(opacity),
+              // Increased size: stars will now be between 6px and 14px
+              size: 6.0 + (index % 3) * 4.0,
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+
+
   Widget _buildHeroSection() {
     return Container(
-      height: 550,
+      // Original padding and background
+      padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 20),
       width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF1A1A1A), Color(0xFF0F0F0F)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
+        alignment: Alignment.center, // Keeps the column perfectly centered
         children: [
-          const Text(
-            "BRING DIGITAL BEAUTY TO LIFE",
-            style: TextStyle(
-              fontSize: 16,
-              letterSpacing: 4,
-              color: Color(0xFFD4AF37),
+          // 1. THE HERO STARS (Local Layer)
+          IgnorePointer(
+            child: SizedBox(
+              height: 500,
+              width: 1200,
+              child: Stack(
+                children: List.generate(15, (index) {
+                  // Distributed specifically to frame the hero text
+                  final double top = (index * 70.0) % 450;
+                  final double left = (index * 130.0) % 1100;
+
+                  return Positioned(
+                    top: top,
+                    left: left,
+                    child: Icon(
+                      Icons.auto_awesome,
+                      // Brightness set for high visibility
+                      color: Colors.white.withOpacity(0.25),
+                      // Large, visible sizes (8px to 18px)
+                      size: 8.0 + (index % 3) * 5.0,
+                    ),
+                  );
+                }),
+              ),
             ),
-          ).animate().fadeIn(duration: 800.ms).slideY(begin: 0.2),
-          const SizedBox(height: 20),
-          Text(
-            "Premium Custom TCGP Cards",
-            textAlign: TextAlign.center,
-            style: GoogleFonts.montserrat(
-              fontSize: 50,
-              fontWeight: FontWeight.w900,
-            ),
-          ).animate().fadeIn(delay: 400.ms).scale(),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFD4AF37),
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-            ),
-            onPressed: () => _scrollTo(_aboutKey),
-            child: const Text("START YOUR COLLECTION"),
-          ).animate().shake(delay: 1500.ms),
+          ),
+
+          // 2. YOUR ORIGINAL CONTENT
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "BRING DIGITAL BEAUTY TO LIFE",
+                style: TextStyle(
+                  fontSize: 16,
+                  letterSpacing: 4,
+                  color: Color(0xFFD4AF37),
+                ),
+              ).animate().fadeIn(duration: 800.ms).slideY(begin: 0.2),
+              const SizedBox(height: 20),
+              Text(
+                "Premium Custom TCGP Cards",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.montserrat(
+                  fontSize: 50,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                ),
+              ).animate().fadeIn(delay: 400.ms).scale(),
+              const SizedBox(height: 40),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFD4AF37),
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                ),
+                onPressed: () => _scrollTo(_aboutKey),
+                child: const Text("START YOUR COLLECTION"),
+              ).animate().shake(delay: 1500.ms),
+            ],
+          ),
         ],
       ),
     );
   }
+
+
+
 
   Widget _buildAboutSection(bool isMobile, GlobalKey key) {
     return Container(
@@ -267,7 +340,7 @@ class _LandingPageState extends State<LandingPage> {
             alignment: WrapAlignment.center,
             children: [
               _serviceCard(
-                "TCG Full Art Proxy",
+                "Pokemon TCG Full Art",
                 "\$25",
                 RichText(
                   textAlign: TextAlign.center,
@@ -328,7 +401,7 @@ class _LandingPageState extends State<LandingPage> {
                 Icons.auto_awesome,
               ),
               _serviceCard(
-                "Gemini AI Custom",
+                "Gemini AI Full Art",
                 "\$35",
                 const Text(
                   "We will design your full art for you using AI prompts, then we will work together to build the Pokémon card. Perfect for turning pets or people into custom Pokémon cards!",
@@ -671,14 +744,28 @@ class _LandingPageState extends State<LandingPage> {
                         ),
                       ),
                       const SizedBox(height: 20),
+
+
+
+
+
                       Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Opacity(
-                            opacity: 0.7, // 0.7 represents 70% opacity
-                            child: Image.network(
-                              '${githubBase}how_cards_made.png',
-                              width: 400,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Colors.white10, // Very faint white border
+                              width: 1.0,
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Opacity(
+                              opacity: 0.7,
+                              child: Image.network(
+                                '${githubBase}how_cards_made.png',
+                                width: 400,
+                              ),
                             ),
                           ),
                         ),
@@ -1263,82 +1350,121 @@ class GeminiDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // You can swap this with a specific reference image URL from your GitHub
     const String refCardUrl =
         "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/vlad.jpg";
 
     return Scaffold(
+      backgroundColor: const Color(0xFF0F0F0F),
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text("Gemini AI Custom Service"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          "Gemini AI Service",
+          style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          children: [
-            // Reference Image with a glow effect
-            Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFD4AF37).withOpacity(0.3),
-                      blurRadius: 20,
-                      spreadRadius: 5,
+      body: Stack(
+        children: [
+          // 1. FIXED BACKGROUND STARS
+          Positioned.fill(
+            child: _buildGlobalStarField(),
+          ),
+
+          // 2. SCROLLABLE CONTENT
+          SingleChildScrollView(
+            padding: const EdgeInsets.only(top: 120, left: 30, right: 30, bottom: 60),
+            child: Column(
+              children: [
+                Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFD4AF37).withOpacity(0.3),
+                          blurRadius: 40,
+                          spreadRadius: 5,
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.network(
+                        refCardUrl,
+                        height: 400,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms),
+
+                const SizedBox(height: 40),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _infoSection(
+                      "Process",
+                      "Once the payment has been completed, please provide as much information as possible, including reference images of the person and/or pet, full-art design details. Also, include the following card information below. I’ll generate the design using an AI prompt, guiding you throughout the process to ensure it turns out perfect.",
+                    ),
+                    const SizedBox(height: 25),
+                    _bulletPoint("Card Name"),
+                    _bulletPoint("Energy Type & Card HP"),
+                    _bulletPoint(
+                      "Attack/Ability names, descriptions, energy type and cost, and damage amounts. (We recommend including only one ability or attack to prevent your full art from being covered.)",
+                    ),
+                    _bulletPoint("Weakness, Resistance, and Retreat Cost"),
+
+                    const SizedBox(height: 30),
+                    _infoSection(
+                      "A Note on Specificity",
+                      "We are happy to do minor edits on the generated image. When requesting edits, please be as specific as possible, as it takes time for us to make changes to an image. For example, we once had a customer ask us to 'make the ear brown', but after a day, it turned out to be a typo; they meant 'make the beard brown'.",
                     ),
                   ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.network(
-                    refCardUrl,
-                    height: 400,
-                    fit: BoxFit.contain,
+                ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
+
+                const SizedBox(height: 50),
+
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFD4AF37),
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                ),
-              ),
-            ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms),
-
-            const SizedBox(height: 40),
-
-            // Text Content
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _infoSection(
-                  "Process",
-                  "Please provide as much information as possible, including reference images of the person and/or pet, full-art design details. Also, include the following card information below. I’ll generate the design using an AI prompt, guiding you throughout the process to ensure it turns out perfect.",
-                ),
-                const SizedBox(height: 20),
-                _bulletPoint("Card Name"),
-                _bulletPoint("Energy Type & Card HP"),
-                // Updated points for Attack/Ability
-                _bulletPoint(
-                  "Attack/Ability names, descriptions, energy type and cost, and damage amounts. (We recommend including only one ability or attack to prevent your full art to be covered.)",
-                ),
-
-                _bulletPoint("Weakness, Resistance, and Retreat Cost"),
-
-                const SizedBox(height: 20),
-                _infoSection(
-                  "A Note on Specificity",
-                  "We are happy to do minor edits on the generated image. When requesting edits, please be as specific as possible, as it takes time for us to make changes to an image. For example, we once had a customer ask us to 'make the ear brown', but after a day, it turned out to be a typo; they meant 'make the beard brown'.",
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("BACK TO SERVICES", style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
-            ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
-
-            const SizedBox(height: 50),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFD4AF37),
-                foregroundColor: Colors.black,
-              ),
-              onPressed: () => Navigator.pop(context),
-              child: const Text("BACK TO SERVICES"),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGlobalStarField() {
+    return IgnorePointer(
+      child: Stack(
+        children: List.generate(150, (index) {
+          final double top = (index * 163.7) % 3000;
+          final double left = (index * 224.7) % 1500;
+          final double opacity = 0.15 + (index % 10) * 0.03;
+
+          return Positioned(
+            top: top,
+            left: left,
+            child: Icon(
+              Icons.auto_awesome,
+              color: Colors.white.withOpacity(opacity),
+              size: 6.0 + (index % 3) * 4.0,
+            ),
+          );
+        }),
       ),
     );
   }
@@ -1353,14 +1479,15 @@ class GeminiDetailPage extends StatelessWidget {
             color: Color(0xFFD4AF37),
             fontWeight: FontWeight.bold,
             letterSpacing: 1.5,
+            fontSize: 14,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Text(
           body,
           style: const TextStyle(
-            fontSize: 16,
-            height: 1.5,
+            fontSize: 15,
+            height: 1.6,
             color: Colors.white70,
           ),
         ),
@@ -1370,14 +1497,16 @@ class GeminiDetailPage extends StatelessWidget {
 
   Widget _bulletPoint(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      // Increased spacing for readability
+      padding: const EdgeInsets.only(bottom: 14.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        // Align icon with the top of the text
         children: [
-          const Icon(Icons.auto_awesome, color: Color(0xFFD4AF37), size: 16),
-          const SizedBox(width: 10),
+          const Padding(
+            // FIXED ERROR HERE: changed .top(2) to .only(top: 2)
+            padding: EdgeInsets.only(top: 2),
+            child: Icon(Icons.auto_awesome, color: Color(0xFFD4AF37), size: 14),
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               text,
