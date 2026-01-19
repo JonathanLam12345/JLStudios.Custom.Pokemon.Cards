@@ -340,7 +340,7 @@ class _LandingPageState extends State<LandingPage> {
             alignment: WrapAlignment.center,
             children: [
               _serviceCard(
-                "Pokemon TCG Full Art",
+                "Pokémon TCG Full Art",
                 "\$25",
                 RichText(
                   textAlign: TextAlign.center,
