@@ -112,7 +112,7 @@ class _LandingPageState extends State<LandingPage> {
             child: InkWell(
               onTap: () => _launchURL('https://instagram.com/JLStudios416'),
               child: Image.network(
-                '${githubBase}instagram_logo.png', // Switched to network
+                '${githubBase}instagram_logo.webp', // Switched to network
                 width: 20,
                 height: 20,
                 fit: BoxFit.contain,
@@ -452,10 +452,10 @@ class _LandingPageState extends State<LandingPage> {
               alignment: WrapAlignment.center,
               // Centers items in the row
               children: [
-                _holoType("Scattered Glass", "scattered_glass.jpg"),
-                _holoType("Reflective Rainbow", "reflective_rainbow.jpg"),
-                _holoType("Fine Sparkle", "fine_sprakle.jpg"),
-                _holoType("Scattered Stars", "scattered_stars.jpg"),
+                _holoType("Scattered Glass", "scattered_glass.webp"),
+                _holoType("Reflective Rainbow", "reflective_rainbow.webp"),
+                _holoType("Fine Sparkle", "fine_sprakle.webp"),
+                _holoType("Scattered Stars", "scattered_stars.webp"),
               ],
             ),
           ),
@@ -577,7 +577,7 @@ class _LandingPageState extends State<LandingPage> {
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: Image.network(
-              '${githubBase}how_cards_made.png', // Switched to network
+              '${githubBase}how_cards_made.webp', // Switched to network
               width: 340,
               fit: BoxFit.contain,
               loadingBuilder: (context, child, loadingProgress) {
@@ -683,7 +683,7 @@ class _LandingPageState extends State<LandingPage> {
             onTap: () => _launchURL('https://instagram.com/JLStudios416'),
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
-              '${githubBase}instagram_logo.png', // Switched to network
+              '${githubBase}instagram_logo.webp', // Switched to network
               width: 25,
               height: 25,
               fit: BoxFit.contain,
@@ -763,7 +763,7 @@ class _LandingPageState extends State<LandingPage> {
                             child: Opacity(
                               opacity: 0.7,
                               child: Image.network(
-                                '${githubBase}how_cards_made.png',
+                                '${githubBase}how_cards_made.webp',
                                 width: 400,
                               ),
                             ),
@@ -1165,20 +1165,20 @@ class _CardSlideshowState extends State<CardSlideshow> {
       "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/refs/heads/main/assets/";
 
   late final List<String> cardImages = [
-    '${githubBase}elsie.png',
-    '${githubBase}charizard1.jpg',
-    '${githubBase}rowan.jpg',
-    '${githubBase}pikachu.jpg',
-    '${githubBase}vlad.jpg',
-    '${githubBase}charizard.jpg',
-    '${githubBase}jason.png',
-    '${githubBase}espeon.png',
-    '${githubBase}hiro.jpg',
-    '${githubBase}charizard_with_stand.jpg',
-    '${githubBase}serena.jpg',
-    '${githubBase}raz.jpg',
-    '${githubBase}philip.jpg',
-    '${githubBase}costco.jpg',
+    '${githubBase}elsie.webp',
+    '${githubBase}charizard1.webp',
+    '${githubBase}rowan.webp',
+    '${githubBase}pikachu.webp',
+    '${githubBase}vlad.webp',
+    '${githubBase}charizard.webp',
+    '${githubBase}jason.webp',
+    '${githubBase}espeon.webp',
+    '${githubBase}hiro.webp',
+    '${githubBase}charizard_with_stand.webp',
+    '${githubBase}serena.webp',
+    '${githubBase}raz.webp',
+    '${githubBase}philip.webp',
+    '${githubBase}costco.webp',
   ];
 
   @override
@@ -1236,8 +1236,8 @@ class _CardSlideshowState extends State<CardSlideshow> {
     super.didChangeDependencies();
 
     // 1. UI Elements (The first things users see)
-    precacheImage(NetworkImage('${githubBase}instagram_logo.png'), context);
-    precacheImage(NetworkImage('${githubBase}how_cards_made.png'), context);
+    precacheImage(NetworkImage('${githubBase}instagram_logo.webp'), context);
+    precacheImage(NetworkImage('${githubBase}how_cards_made.webp'), context);
 
     // 2. Slideshow Images
     // We use the list you already defined
@@ -1247,10 +1247,10 @@ class _CardSlideshowState extends State<CardSlideshow> {
 
     // 3. Holo Pattern Images
     List<String> holoFiles = [
-      "scattered_glass.jpg",
-      "reflective_rainbow.jpg",
-      "fine_sprakle.jpg",
-      "scattered_stars.jpg",
+      "scattered_glass.webp",
+      "reflective_rainbow.webp",
+      "fine_sprakle.webp",
+      "scattered_stars.webp",
     ];
 
     for (String fileName in holoFiles) {
@@ -1351,7 +1351,7 @@ class GeminiDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const String refCardUrl =
-        "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/vlad.jpg";
+        "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/vlad.webp";
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F0F0F),
