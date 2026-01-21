@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
-import 'dart:async'; // 1. Add this import at the very top of your file
+import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
@@ -124,39 +124,32 @@ class _LandingPageState extends State<LandingPage> {
           const SizedBox(width: 10),
         ],
       ),
-      body:
-
-      Stack(
+      body: SelectionArea(
+        child: Stack(
           children: [
-          // 1. The Fixed Background Star Layer
-          Positioned.fill(
-          child: _buildGlobalStarField(),
+            // 1. The Fixed Background Star Layer
+            Positioned.fill(child: _buildGlobalStarField()),
 
-    ),
-
-
-
-      SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            _buildHeroSection(),
-            _buildAboutSection(isMobile, _aboutKey),
-            _buildServicesSection(isMobile, _servicesKey),
-            _buildHoloSelector(_holoKey),
-            _buildHowToPurchase(isMobile, _purchaseKey),
-            _buildFAQSection(_faqKey), // Pass the key here
-
-            //_buildHowMadeSection(isMobile),
-            //_buildCareTips(),
-            //_buildAIFeedback(),
-            _buildFooter(),
+            SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                children: [
+                  _buildHeroSection(),
+                  _buildAboutSection(isMobile, _aboutKey),
+                  _buildServicesSection(isMobile, _servicesKey),
+                  _buildHoloSelector(_holoKey),
+                  _buildHowToPurchase(isMobile, _purchaseKey),
+                  _buildFAQSection(_faqKey), // Pass the key here
+                  //_buildHowMadeSection(isMobile),
+                  //_buildCareTips(),
+                  //_buildAIFeedback(),
+                  _buildFooter(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
-      ],
-    ),
-
       // PASTE THE CODE HERE:
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _launchURL('https://instagram.com/JLStudios416'),
@@ -204,8 +197,6 @@ class _LandingPageState extends State<LandingPage> {
       ),
     );
   }
-
-
 
   Widget _buildHeroSection() {
     return Container(
@@ -269,7 +260,10 @@ class _LandingPageState extends State<LandingPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFD4AF37),
                   foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 20,
+                  ),
                 ),
                 onPressed: () => _scrollTo(_aboutKey),
                 child: const Text("START YOUR COLLECTION"),
@@ -280,9 +274,6 @@ class _LandingPageState extends State<LandingPage> {
       ),
     );
   }
-
-
-
 
   Widget _buildAboutSection(bool isMobile, GlobalKey key) {
     return Container(
@@ -342,9 +333,9 @@ class _LandingPageState extends State<LandingPage> {
               _serviceCard(
                 "Pokémon TCG Full Art",
                 "\$25",
-                RichText(
+                Text.rich(
                   textAlign: TextAlign.center,
-                  text: TextSpan(
+                  TextSpan(
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 14,
@@ -541,9 +532,9 @@ class _LandingPageState extends State<LandingPage> {
             subtitle: "The Craftsmanship",
           ),
           const SizedBox(height: 30),
-          RichText(
+          Text.rich(
             textAlign: TextAlign.center,
-            text: TextSpan(
+             TextSpan(
               // Default style for the whole sentence
               style: const TextStyle(
                 fontSize: 16,
@@ -702,6 +693,8 @@ class _LandingPageState extends State<LandingPage> {
       // Reduced bottom padding from 80 to 0 to fix the extra spacing
       padding: const EdgeInsets.only(top: 80, bottom: 0, left: 20, right: 20),
       color: const Color(0xFF0F0F0F),
+      child:
+      SelectionArea(
       child: Column(
         children: [
           const SectionHeader(title: "FAQ", subtitle: "Common Concerns"),
@@ -716,38 +709,36 @@ class _LandingPageState extends State<LandingPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      RichText(
-                        text: TextSpan(
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            height: 1.5,
-                            fontSize: 16,
-                          ),
-                          children: [
-                            const TextSpan(text: "We are active members of "),
-                            TextSpan(
-                              text: "r/customtradingcard",
-                              style: const TextStyle(
-                                color: Color(0xFFD4AF37),
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => _launchURL(
-                                  'https://www.reddit.com/r/customtradingcard/',
+                      SelectionArea(
+                        child: Text.rich(
+                           TextSpan(
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              height: 1.5,
+                              fontSize: 16,
+                            ),
+                            children: [
+                              const TextSpan(text: "We are active members of "),
+                              TextSpan(
+                                text: "r/customtradingcard",
+                                style: const TextStyle(
+                                  color: Color(0xFFD4AF37),
+                                  decoration: TextDecoration.underline,
                                 ),
-                            ),
-                            const TextSpan(
-                              text:
-                                  ". Our process involves precision-pressing high-quality vinyl sheets onto an authentic Pokémon card base for a genuine feel.",
-                            ),
-                          ],
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () => _launchURL(
+                                    'https://www.reddit.com/r/customtradingcard/',
+                                  ),
+                              ),
+                              const TextSpan(
+                                text:
+                                    ". Our process involves precision-pressing high-quality vinyl sheets onto an authentic Pokémon card base for a genuine feel.",
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
-
-
-
-
 
                       Center(
                         child: Container(
@@ -840,21 +831,26 @@ class _LandingPageState extends State<LandingPage> {
                       fontSize: 16,
                     ),
                   ),
-                 // isLast: true, // Add this flag to the last item
+                  // isLast: true, // Add this flag to the last item
                 ),
-// 5. SHIPPING TIME
+                // 5. SHIPPING TIME
                 _faqItem(
                   "How long does shipping take?",
                   const Text(
                     "Delivery times may vary depending on your location and the time of year (it may take a few weeks). If you plan on giving the card as a gift for a specific date, please reach out to us early and let us know so we can work according to your plan.",
-                    style: TextStyle(color: Colors.white70, height: 1.5, fontSize: 16),
-                  ),isLast: true, // Add this flag to the last item
+                    style: TextStyle(
+                      color: Colors.white70,
+                      height: 1.5,
+                      fontSize: 16,
+                    ),
+                  ),
+                  isLast: true, // Add this flag to the last item
                 ),
-
               ],
             ),
           ),
         ],
+      ),
       ),
     );
   }
@@ -863,40 +859,42 @@ class _LandingPageState extends State<LandingPage> {
     return Padding(
       padding: EdgeInsets.only(bottom: isLast ? 20 : 40),
       // Tighter spacing for the last item
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.help_outline,
-                color: Color(0xFFD4AF37),
-                size: 20,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  question,
-                  style: const TextStyle(
-                    color: Color(0xFFD4AF37),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+      child: SelectionArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(
+                  Icons.help_outline,
+                  color: Color(0xFFD4AF37),
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    question,
+                    style: const TextStyle(
+                      color: Color(0xFFD4AF37),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
-              ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            Padding(
+              padding: const EdgeInsets.only(left: 32),
+              child: answerWidget,
+            ),
+            if (!isLast) ...[
+              // Only show divider if it's NOT the last item
+              const SizedBox(height: 20),
+              const Divider(color: Colors.white10),
             ],
-          ),
-          const SizedBox(height: 15),
-          Padding(
-            padding: const EdgeInsets.only(left: 32),
-            child: answerWidget,
-          ),
-          if (!isLast) ...[
-            // Only show divider if it's NOT the last item
-            const SizedBox(height: 20),
-            const Divider(color: Colors.white10),
           ],
-        ],
+        ),
       ),
     );
   }
@@ -1081,9 +1079,9 @@ class _LandingPageState extends State<LandingPage> {
             ),
           ),
           const SizedBox(height: 15),
-          RichText(
+          Text.rich(
             textAlign: TextAlign.center,
-            text: TextSpan(
+             TextSpan(
               style: const TextStyle(color: Colors.white, fontSize: 14),
               children: [
                 if (text.contains("@")) ...[
@@ -1228,7 +1226,9 @@ class _CardSlideshowState extends State<CardSlideshow> {
   void _movePrevious() {
     if (_pageController.hasClients) {
       // Calculate the previous page index with modulo to loop to the end if at 0
-      int prevPage = (_pageController.page!.toInt() - 1 + cardImages.length) % cardImages.length;
+      int prevPage =
+          (_pageController.page!.toInt() - 1 + cardImages.length) %
+          cardImages.length;
 
       _pageController.animateToPage(
         prevPage,
@@ -1238,7 +1238,6 @@ class _CardSlideshowState extends State<CardSlideshow> {
       _startTimer(); // Resets the 6-second auto-play clock [cite: 200]
     }
   }
-
 
   @override
   void didChangeDependencies() {
@@ -1269,7 +1268,6 @@ class _CardSlideshowState extends State<CardSlideshow> {
       precacheImage(NetworkImage('$githubBase$fileName'), context);
     }
   }
-
 
   // @override
   // void didChangeDependencies() {
@@ -1326,7 +1324,8 @@ class _CardSlideshowState extends State<CardSlideshow> {
                       child: CircularProgressIndicator(
                         color: const Color(0xFFD4AF37),
                         value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
                             : null,
                       ),
                     );
@@ -1406,81 +1405,94 @@ class GeminiDetailPage extends StatelessWidget {
           style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Stack(
-        children: [
-          // 1. FIXED BACKGROUND STARS
-          Positioned.fill(
-            child: _buildGlobalStarField(),
-          ),
+      body: SelectionArea(
+        child: Stack(
+          children: [
+            // 1. FIXED BACKGROUND STARS
+            Positioned.fill(child: _buildGlobalStarField()),
 
-          // 2. SCROLLABLE CONTENT
-          SingleChildScrollView(
-            padding: const EdgeInsets.only(top: 120, left: 30, right: 30, bottom: 60),
-            child: Column(
-              children: [
-                Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFFD4AF37).withOpacity(0.3),
-                          blurRadius: 40,
-                          spreadRadius: 5,
+            // 2. SCROLLABLE CONTENT
+            SingleChildScrollView(
+              padding: const EdgeInsets.only(
+                top: 120,
+                left: 30,
+                right: 30,
+                bottom: 60,
+              ),
+              child: Column(
+                children: [
+                  Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFD4AF37).withOpacity(0.3),
+                            blurRadius: 40,
+                            spreadRadius: 5,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Image.network(
+                          refCardUrl,
+                          height: 400,
+                          fit: BoxFit.contain,
                         ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.network(
-                        refCardUrl,
-                        height: 400,
-                        fit: BoxFit.contain,
                       ),
                     ),
+                  ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms),
+
+                  const SizedBox(height: 40),
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _infoSection(
+                        "Process",
+                        "Once the payment has been completed, please provide as much information as possible, including reference images of the person and/or pet, full-art design details. Also, include the following card information below. I’ll generate the design using an AI prompt, guiding you throughout the process to ensure it turns out perfect.",
+                      ),
+                      const SizedBox(height: 25),
+                      _bulletPoint("Card Name"),
+                      _bulletPoint("Energy Type & Card HP"),
+                      _bulletPoint(
+                        "Attack/Ability names, descriptions, energy type and cost, and damage amounts. (We recommend including only one ability or attack to prevent your full art from being covered.)",
+                      ),
+                      _bulletPoint("Weakness, Resistance, and Retreat Cost"),
+
+                      const SizedBox(height: 30),
+                      _infoSection(
+                        "A Note on Specificity",
+                        "We are happy to do minor edits on the generated image. When requesting edits, please be as specific as possible, as it takes time for us to make changes to an image. For example, we once had a customer ask us to 'make the ear brown', but after a day, it turned out to be a typo; they meant 'make the beard brown'.",
+                      ),
+                    ],
+                  ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
+
+                  const SizedBox(height: 50),
+
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFD4AF37),
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 15,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      "BACK TO SERVICES",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms),
-
-                const SizedBox(height: 40),
-
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _infoSection(
-                      "Process",
-                      "Once the payment has been completed, please provide as much information as possible, including reference images of the person and/or pet, full-art design details. Also, include the following card information below. I’ll generate the design using an AI prompt, guiding you throughout the process to ensure it turns out perfect.",
-                    ),
-                    const SizedBox(height: 25),
-                    _bulletPoint("Card Name"),
-                    _bulletPoint("Energy Type & Card HP"),
-                    _bulletPoint(
-                      "Attack/Ability names, descriptions, energy type and cost, and damage amounts. (We recommend including only one ability or attack to prevent your full art from being covered.)",
-                    ),
-                    _bulletPoint("Weakness, Resistance, and Retreat Cost"),
-
-                    const SizedBox(height: 30),
-                    _infoSection(
-                      "A Note on Specificity",
-                      "We are happy to do minor edits on the generated image. When requesting edits, please be as specific as possible, as it takes time for us to make changes to an image. For example, we once had a customer ask us to 'make the ear brown', but after a day, it turned out to be a typo; they meant 'make the beard brown'.",
-                    ),
-                  ],
-                ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
-
-                const SizedBox(height: 50),
-
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD4AF37),
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("BACK TO SERVICES", style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
