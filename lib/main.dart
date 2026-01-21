@@ -1203,46 +1203,58 @@ class _CardSlideshowState extends State<CardSlideshow> {
         int nextPage = (_pageController.page!.toInt() + 1) % cardImages.length;
         _pageController.animateToPage(
           nextPage,
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeInOut,
+          duration: const Duration(milliseconds: 900),
+          // Slightly slower for elegance
+          curve: Curves.easeOutCubic, // Smoother feel
         );
       }
     });
   }
 
-  // 6. Navigation Logic now includes a call to _startTimer()
   void _moveNext() {
     if (_pageController.hasClients) {
-      _pageController.nextPage(
+      // Calculate the next page index with modulo to loop back to 0 at the end
+      int nextPage = (_pageController.page!.toInt() + 1) % cardImages.length;
+
+      _pageController.animateToPage(
+        nextPage,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeOut,
       );
-      _startTimer(); // This resets the 6-second clock
+      _startTimer(); // Resets the 6-second auto-play clock [cite: 199]
     }
   }
 
   void _movePrevious() {
     if (_pageController.hasClients) {
-      _pageController.previousPage(
+      // Calculate the previous page index with modulo to loop to the end if at 0
+      int prevPage = (_pageController.page!.toInt() - 1 + cardImages.length) % cardImages.length;
+
+      _pageController.animateToPage(
+        prevPage,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeOut,
       );
-      _startTimer(); // This resets the 6-second clock
+      _startTimer(); // Resets the 6-second auto-play clock [cite: 200]
     }
   }
+
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // 1. UI Elements (The first things users see)
+    // Cache UI elements first
     precacheImage(NetworkImage('${githubBase}instagram_logo.webp'), context);
     precacheImage(NetworkImage('${githubBase}how_cards_made.webp'), context);
 
-    // 2. Slideshow Images
-    // We use the list you already defined
+    // Staggered and Resized Caching for slideshow
     for (String url in cardImages) {
-      precacheImage(NetworkImage(url), context);
+      precacheImage(
+        // Resize to 800px height to save massive amounts of RAM
+        ResizeImage(NetworkImage(url), height: 800),
+        context,
+      ).catchError((e) => debugPrint("Error caching $url: $e"));
     }
 
     // 3. Holo Pattern Images
@@ -1252,11 +1264,39 @@ class _CardSlideshowState extends State<CardSlideshow> {
       "fine_sprakle.webp",
       "scattered_stars.webp",
     ];
-
+    // Caching Holo Patterns...
     for (String fileName in holoFiles) {
       precacheImage(NetworkImage('$githubBase$fileName'), context);
     }
   }
+
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //
+  //   // 1. UI Elements (The first things users see)
+  //   precacheImage(NetworkImage('${githubBase}instagram_logo.webp'), context);
+  //   precacheImage(NetworkImage('${githubBase}how_cards_made.webp'), context);
+  //
+  //   // 2. Slideshow Images
+  //   // We use the list you already defined
+  //   for (String url in cardImages) {
+  //     precacheImage(NetworkImage(url), context);
+  //   }
+  //
+  //   // 3. Holo Pattern Images
+  //   List<String> holoFiles = [
+  //     "scattered_glass.webp",
+  //     "reflective_rainbow.webp",
+  //     "fine_sprakle.webp",
+  //     "scattered_stars.webp",
+  //   ];
+  //
+  //   for (String fileName in holoFiles) {
+  //     precacheImage(NetworkImage('$githubBase$fileName'), context);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -1278,21 +1318,19 @@ class _CardSlideshowState extends State<CardSlideshow> {
                 return Image.network(
                   cardImages[index],
                   fit: BoxFit.contain,
+                  // Match the height used in precacheImage to hit the memory cache
+                  cacheHeight: 800,
                   loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null)
-                      return child; // Image is finished loading
+                    if (loadingProgress == null) return child;
                     return Center(
                       child: CircularProgressIndicator(
                         color: const Color(0xFFD4AF37),
                         value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
+                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
                             : null,
                       ),
                     );
                   },
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.broken_image, color: Colors.red),
                 );
               },
             ),
