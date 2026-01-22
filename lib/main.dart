@@ -97,8 +97,8 @@ class _LandingPageState extends State<LandingPage> {
               // 1. The Logo Image
               Image.network(
                 '${githubBase}jlstudios_logo.webp',
-                width: 32,  // Adjust size as needed
-                height: 32,
+                width: 320,  // Adjust size as needed
+                height: 320,
                 fit: BoxFit.contain,
                 // Error builder ensures the site doesn't look broken if the image fails to load
                 errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
