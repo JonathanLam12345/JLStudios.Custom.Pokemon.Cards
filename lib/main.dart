@@ -91,13 +91,30 @@ class _LandingPageState extends State<LandingPage> {
           ),
         ),
 
-        title: Text(
-          'JLStudios',
-          style: GoogleFonts.montserrat(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2,
+          title: Row(
+            mainAxisSize: MainAxisSize.min, // Keeps the logo and text tight together
+            children: [
+              // 1. The Logo Image
+              Image.network(
+                '${githubBase}jlstudios_logo.webp',
+                width: 32,  // Adjust size as needed
+                height: 32,
+                fit: BoxFit.contain,
+                // Error builder ensures the site doesn't look broken if the image fails to load
+                errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+              ),
+              const SizedBox(width: 12), // Spacing between logo and text
+
+              // 2. The Text Title
+              Text(
+                'JLStudios',
+                style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                ),
+              ),
+            ],
           ),
-        ),
         actions: [
           if (!isMobile) ...[
             _navButton("About Us", _aboutKey),
@@ -247,7 +264,7 @@ class _LandingPageState extends State<LandingPage> {
               ).animate().fadeIn(duration: 800.ms).slideY(begin: 0.2),
               const SizedBox(height: 20),
               Text(
-                "Premium Custom TCGP Cards",
+                "Premium Custom TCG Cards",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.montserrat(
                   fontSize: 50,
