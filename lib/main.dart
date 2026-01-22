@@ -77,107 +77,40 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     final bool isMobile = MediaQuery.of(context).size.width < 800;
-    // Calculate the total height of the top bar area (Navbar + Status Bar/Notch)
     final double topPadding = MediaQuery.of(context).padding.top;
     final double navbarHeight = kToolbarHeight + topPadding;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F0F0F),
-      // 1. CRITICAL: Allows the RefreshIndicator to start from the absolute top of the screen
-      extendBodyBehindAppBar: true,
-
-      appBar: AppBar(
-        backgroundColor: Colors.black.withOpacity(0.4),
-        elevation: 0,
-        centerTitle: false,
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(color: Colors.transparent),
-          ),
-        ),
-        // Clickable Logo and Title
-        title: InkWell(
-          onTap: () => html.window.location.reload(),
-          mouseCursor: SystemMouseCursors.click,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.network(
-                '${githubBase}jlstudios_logo.webp',
-                width: 32,
-                height: 32,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
-              ),
-              const SizedBox(width: 12),
-          Text(
-            'JLStudios',
-            style: const TextStyle( // Switched from GoogleFonts to standard TextStyle
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2.0,     // Keeps the spaced-out, premium look
-              color: Colors.white,
-              fontFamily: '',         // Leaving this empty uses the system default
-            ),
-          ),
-            ],
-          ),
-        ),
-        actions: [
-          if (!isMobile) ...[
-            _navButton("About Us", _aboutKey),
-            _navButton("Our Services", _servicesKey),
-            _navButton("Holo Patterns", _holoKey),
-            _navButton("Order Now", _purchaseKey),
-            _navButton("FAQ", _faqKey),
-          ],
-          // Instagram Icon
-          Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: InkWell(
-              onTap: () => _launchURL('https://instagram.com/JLStudios416'),
-              child: Image.network(
-                '${githubBase}instagram_logo.webp',
-                width: 20,
-                height: 20,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-        ],
-      ),
-
+      // Remove the 'appBar:' property here entirely to handle it manually
       body: SelectionArea(
-        child: Stack(
-          children: [
-            // Background Stars (Fixed)
-            Positioned.fill(child: _buildGlobalStarField()),
+        child: RefreshIndicator(
+          color: const Color(0xFF4285F4),
+          // Chrome Blue
+          backgroundColor: Colors.white,
+          strokeWidth: 2.5,
+          // The icon will now drop down OVER the navbar
+          edgeOffset: topPadding + 10,
+          displacement: 40,
+          onRefresh: () async {
+            html.window.location.reload();
+            return await Future.delayed(const Duration(milliseconds: 500));
+          },
+          child: Stack(
+            children: [
+              // Layer 1: Background Stars (Bottom)
+              Positioned.fill(child: _buildGlobalStarField()),
 
-            // The Refresh Wrapper
-            RefreshIndicator(
-              color: const Color(0xFF4285F4), // Chrome Blue
-              backgroundColor: Colors.white,
-              strokeWidth: 2.5,
-              // 2. Position the indicator so it drops down OVER the navbar
-              edgeOffset: topPadding + 10,
-              displacement: 40,
-              onRefresh: () async {
-                html.window.location.reload();
-                return await Future.delayed(const Duration(milliseconds: 500));
-              },
-              child: SingleChildScrollView(
+              // Layer 2: Main Content
+              SingleChildScrollView(
                 controller: _scrollController,
-                // Bouncing physics makes the "pull" feel native like the Chrome App
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
                 ),
                 child: Column(
                   children: [
-                    // 3. Compensate for the transparent AppBar so content starts below it
+                    // Compensate for the manual navbar height
                     SizedBox(height: navbarHeight + 20),
-
                     _buildHeroSection(),
                     _buildAboutSection(isMobile, _aboutKey),
                     _buildServicesSection(isMobile, _servicesKey),
@@ -188,11 +121,97 @@ class _LandingPageState extends State<LandingPage> {
                   ],
                 ),
               ),
-            ),
-          ],
+
+              // Layer 3: The Navbar (Top)
+              // Placing this AFTER the SingleChildScrollView in the Stack
+              // ensures content scrolls UNDER the blur, but BEFORE the
+              // RefreshIndicator (the parent) so the icon stays on TOP.
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: SizedBox(
+                  height: navbarHeight,
+                  child: AppBar(
+                    backgroundColor: Colors.black.withOpacity(0.4),
+                    elevation: 0,
+                    centerTitle: false,
+                    flexibleSpace: ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(color: Colors.transparent),
+                      ),
+                    ),
+                    title: _buildAppBarTitle(),
+                    // Extracted for cleanliness
+                    actions: _buildAppBarActions(isMobile),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  // --- NEW APPBAR HELPER METHODS ---
+
+  Widget _buildAppBarTitle() {
+    return InkWell(
+      onTap: () => html.window.location.reload(),
+      mouseCursor: SystemMouseCursors.click,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.network(
+            '${githubBase}jlstudios_logo.webp',
+            width: 32,
+            height: 32,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) =>
+                const SizedBox.shrink(),
+          ),
+          const SizedBox(width: 12),
+          const Text(
+            'JLStudios',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2.0,
+              color: Colors.white,
+              fontFamily: '',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildAppBarActions(bool isMobile) {
+    return [
+      if (!isMobile) ...[
+        _navButton("About Us", _aboutKey),
+        _navButton("Our Services", _servicesKey),
+        _navButton("Holo Patterns", _holoKey),
+        _navButton("Order Now", _purchaseKey),
+        _navButton("FAQ", _faqKey),
+      ],
+      // Instagram Icon
+      Padding(
+        padding: const EdgeInsets.only(right: 15),
+        child: InkWell(
+          onTap: () => _launchURL('https://instagram.com/JLStudios416'),
+          child: Image.network(
+            '${githubBase}instagram_logo.webp',
+            width: 20,
+            height: 20,
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
+    ];
   }
 
   Widget _navButton(String text, GlobalKey key) {
@@ -281,12 +300,15 @@ class _LandingPageState extends State<LandingPage> {
               Text(
                 "Premium Custom TCG Cards",
                 textAlign: TextAlign.center,
-                style: const TextStyle( // Switched from GoogleFonts to standard TextStyle
+                style: const TextStyle(
+                  // Switched from GoogleFonts to standard TextStyle
                   fontSize: 50,
-                  fontWeight: FontWeight.w900, // Keeps the thickest bold weight
+                  fontWeight: FontWeight.w900,
+                  // Keeps the thickest bold weight
                   color: Colors.white,
-                  letterSpacing: -1.0, // Tightens the letters for a more modern, premium look
-                  fontFamily: '',      // Defaults to the device's native system font
+                  letterSpacing: -1.0,
+                  // Tightens the letters for a more modern, premium look
+                  fontFamily: '', // Defaults to the device's native system font
                 ),
               ).animate().fadeIn(delay: 400.ms).scale(),
               const SizedBox(height: 40),
@@ -568,7 +590,7 @@ class _LandingPageState extends State<LandingPage> {
           const SizedBox(height: 30),
           Text.rich(
             textAlign: TextAlign.center,
-             TextSpan(
+            TextSpan(
               // Default style for the whole sentence
               style: const TextStyle(
                 fontSize: 16,
@@ -727,164 +749,166 @@ class _LandingPageState extends State<LandingPage> {
       // Reduced bottom padding from 80 to 0 to fix the extra spacing
       padding: const EdgeInsets.only(top: 80, bottom: 0, left: 20, right: 20),
       color: const Color(0xFF0F0F0F),
-      child:
-      SelectionArea(
-      child: Column(
-        children: [
-          const SectionHeader(title: "FAQ", subtitle: "Common Concerns"),
-          const SizedBox(height: 50),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 900),
-            child: Column(
-              children: [
-                // 1. HOW IT'S MADE
-                _faqItem(
-                  "How are these cards crafted?",
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SelectionArea(
-                        child: Text.rich(
-                           TextSpan(
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              height: 1.5,
-                              fontSize: 16,
-                            ),
-                            children: [
-                              const TextSpan(text: "We are active members of "),
-                              TextSpan(
-                                text: "r/customtradingcard",
-                                style: const TextStyle(
-                                  color: Color(0xFFD4AF37),
-                                  decoration: TextDecoration.underline,
+      child: SelectionArea(
+        child: Column(
+          children: [
+            const SectionHeader(title: "FAQ", subtitle: "Common Concerns"),
+            const SizedBox(height: 50),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 900),
+              child: Column(
+                children: [
+                  // 1. HOW IT'S MADE
+                  _faqItem(
+                    "How are these cards crafted?",
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SelectionArea(
+                          child: Text.rich(
+                            TextSpan(
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                height: 1.5,
+                                fontSize: 16,
+                              ),
+                              children: [
+                                const TextSpan(
+                                  text: "We are active members of ",
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () => _launchURL(
-                                    'https://www.reddit.com/r/customtradingcard/',
+                                TextSpan(
+                                  text: "r/customtradingcard",
+                                  style: const TextStyle(
+                                    color: Color(0xFFD4AF37),
+                                    decoration: TextDecoration.underline,
                                   ),
-                              ),
-                              const TextSpan(
-                                text:
-                                    ". Our process involves precision-pressing high-quality vinyl sheets onto an authentic Pokémon card base for a genuine feel.",
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      Center(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Colors.white10, // Very faint white border
-                              width: 1.0,
-                            ),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Opacity(
-                              opacity: 0.7,
-                              child: Image.network(
-                                '${githubBase}how_cards_made.webp',
-                                width: 400,
-                              ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => _launchURL(
+                                      'https://www.reddit.com/r/customtradingcard/',
+                                    ),
+                                ),
+                                const TextSpan(
+                                  text:
+                                      ". Our process involves precision-pressing high-quality vinyl sheets onto an authentic Pokémon card base for a genuine feel.",
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 15),
-                      const Text(
-                        "Note: We use a specialized white-ink technique to selectively mask the holographic effects. Due to this advanced layering process, minor air bubbles may occur; however, we use silicon compression tools during production to ensure these variations are kept to an absolute minimum for a premium finish. Additionally, a slightly raised texture will occur on the selective mask area.",
-                        style: TextStyle(
-                          color: Colors.white38,
-                          fontSize: 13,
-                          fontStyle: FontStyle.italic,
+                        const SizedBox(height: 20),
+
+                        Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Colors.white10,
+                                // Very faint white border
+                                width: 1.0,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Opacity(
+                                opacity: 0.7,
+                                child: Image.network(
+                                  '${githubBase}how_cards_made.webp',
+                                  width: 400,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // 2. HANDLING & STORAGE
-                _faqItem(
-                  "How should I care for my custom cards?",
-                  Column(
-                    children: [
-                      _featurePoint(
-                        "Keep the card in a protective sleeve at all times (included).",
-                      ),
-                      _featurePoint(
-                        "Do NOT use wet wipes, as the moisture may smear the premium ink.",
-                      ),
-                      _featurePoint(
-                        "Avoid direct sunlight for extended periods to prevent fading.",
-                      ),
-                    ],
-                  ),
-                ),
-
-                // 3. AI ART PHILOSOPHY
-                _faqItem(
-                  "What is your philosophy on AI Art?",
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Without this technology, this project wouldn't be possible. While we use Gemini AI to help design unique concepts for pets and people, we understand it isn't for everyone.",
-                        style: TextStyle(
-                          color: Colors.white70,
-                          height: 1.5,
-                          fontSize: 16,
+                        const SizedBox(height: 15),
+                        const Text(
+                          "Note: We use a specialized white-ink technique to selectively mask the holographic effects. Due to this advanced layering process, minor air bubbles may occur; however, we use silicon compression tools during production to ensure these variations are kept to an absolute minimum for a premium finish. Additionally, a slightly raised texture will occur on the selective mask area.",
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontSize: 13,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "If you prefer human-made art, you can provide your own illustrations! We will happily work with your custom files under our 'Provided Art' service tier.",
-                        style: TextStyle(
-                          color: Colors.white70,
-                          height: 1.5,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // 4. SHIPPING
-                _faqItem(
-                  "Do you ship internationally?",
-
-                  const Text(
-                    "We currently offer local pickup in Richmond Hill, ON, and shipping within Canada/USA for \$5. For international orders, please DM us on Instagram to discuss rates.",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      height: 1.5,
-                      fontSize: 16,
+                      ],
                     ),
                   ),
-                  // isLast: true, // Add this flag to the last item
-                ),
-                // 5. SHIPPING TIME
-                _faqItem(
-                  "How long does shipping take?",
-                  const Text(
-                    "Delivery times may vary depending on your location and the time of year (it may take a few weeks). If you plan on giving the card as a gift for a specific date, please reach out to us early and let us know so we can work according to your plan.",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      height: 1.5,
-                      fontSize: 16,
+
+                  // 2. HANDLING & STORAGE
+                  _faqItem(
+                    "How should I care for my custom cards?",
+                    Column(
+                      children: [
+                        _featurePoint(
+                          "Keep the card in a protective sleeve at all times (included).",
+                        ),
+                        _featurePoint(
+                          "Do NOT use wet wipes, as the moisture may smear the premium ink.",
+                        ),
+                        _featurePoint(
+                          "Avoid direct sunlight for extended periods to prevent fading.",
+                        ),
+                      ],
                     ),
                   ),
-                  isLast: true, // Add this flag to the last item
-                ),
-              ],
+
+                  // 3. AI ART PHILOSOPHY
+                  _faqItem(
+                    "What is your philosophy on AI Art?",
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Without this technology, this project wouldn't be possible. While we use Gemini AI to help design unique concepts for pets and people, we understand it isn't for everyone.",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            height: 1.5,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          "If you prefer human-made art, you can provide your own illustrations! We will happily work with your custom files under our 'Provided Art' service tier.",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            height: 1.5,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // 4. SHIPPING
+                  _faqItem(
+                    "Do you ship internationally?",
+
+                    const Text(
+                      "We currently offer local pickup in Richmond Hill, ON, and shipping within Canada/USA for \$5. For international orders, please DM us on Instagram to discuss rates.",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        height: 1.5,
+                        fontSize: 16,
+                      ),
+                    ),
+                    // isLast: true, // Add this flag to the last item
+                  ),
+                  // 5. SHIPPING TIME
+                  _faqItem(
+                    "How long does shipping take?",
+                    const Text(
+                      "Delivery times may vary depending on your location and the time of year (it may take a few weeks). If you plan on giving the card as a gift for a specific date, please reach out to us early and let us know so we can work according to your plan.",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        height: 1.5,
+                        fontSize: 16,
+                      ),
+                    ),
+                    isLast: true, // Add this flag to the last item
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -1115,7 +1139,7 @@ class _LandingPageState extends State<LandingPage> {
           const SizedBox(height: 15),
           Text.rich(
             textAlign: TextAlign.center,
-             TextSpan(
+            TextSpan(
               style: const TextStyle(color: Colors.white, fontSize: 14),
               children: [
                 if (text.contains("@")) ...[
@@ -1171,10 +1195,12 @@ class SectionHeader extends StatelessWidget {
         Text(
           subtitle,
           textAlign: TextAlign.center,
-          style: const TextStyle( // Use standard TextStyle instead of GoogleFonts
+          style: const TextStyle(
+            // Use standard TextStyle instead of GoogleFonts
             fontSize: 32,
             fontWeight: FontWeight.bold,
-            letterSpacing: -0.5, // System fonts often look better with slight tight spacing
+            letterSpacing: -0.5,
+            // System fonts often look better with slight tight spacing
             color: Colors.white,
             fontFamily: '', // Leaving this blank defaults to the system font
           ),
