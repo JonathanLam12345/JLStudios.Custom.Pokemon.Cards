@@ -113,14 +113,15 @@ class _LandingPageState extends State<LandingPage> {
                 errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
               ),
               const SizedBox(width: 12),
-              Text(
-                'JLStudios',
-                style: GoogleFonts.montserrat(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                  color: Colors.white,
-                ),
-              ),
+          Text(
+            'JLStudios',
+            style: const TextStyle( // Switched from GoogleFonts to standard TextStyle
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2.0,     // Keeps the spaced-out, premium look
+              color: Colors.white,
+              fontFamily: '',         // Leaving this empty uses the system default
+            ),
+          ),
             ],
           ),
         ),
@@ -280,10 +281,12 @@ class _LandingPageState extends State<LandingPage> {
               Text(
                 "Premium Custom TCG Cards",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.montserrat(
+                style: const TextStyle( // Switched from GoogleFonts to standard TextStyle
                   fontSize: 50,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w900, // Keeps the thickest bold weight
                   color: Colors.white,
+                  letterSpacing: -1.0, // Tightens the letters for a more modern, premium look
+                  fontFamily: '',      // Defaults to the device's native system font
                 ),
               ).animate().fadeIn(delay: 400.ms).scale(),
               const SizedBox(height: 40),
@@ -1168,9 +1171,12 @@ class SectionHeader extends StatelessWidget {
         Text(
           subtitle,
           textAlign: TextAlign.center,
-          style: GoogleFonts.montserrat(
+          style: const TextStyle( // Use standard TextStyle instead of GoogleFonts
             fontSize: 32,
             fontWeight: FontWeight.bold,
+            letterSpacing: -0.5, // System fonts often look better with slight tight spacing
+            color: Colors.white,
+            fontFamily: '', // Leaving this blank defaults to the system font
           ),
         ),
         const SizedBox(height: 20),
@@ -1432,9 +1438,13 @@ class GeminiDetailPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
+        title: const Text(
           "Gemini AI Service",
-          style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            // Optional: add letterSpacing if you want to keep that Montserrat feel
+            letterSpacing: 0.5,
+          ),
         ),
       ),
       body: SelectionArea(
