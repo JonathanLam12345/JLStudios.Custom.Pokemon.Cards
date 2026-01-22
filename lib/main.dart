@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -75,46 +76,54 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool isMobile = MediaQuery.of(context).size.width < 800;
+    final bool isMobile = MediaQuery.of(context).size.width < 800;
+    // Calculate the total height of the top bar area (Navbar + Status Bar/Notch)
+    final double topPadding = MediaQuery.of(context).padding.top;
+    final double navbarHeight = kToolbarHeight + topPadding;
 
     return Scaffold(
+      backgroundColor: const Color(0xFF0F0F0F),
+      // 1. CRITICAL: Allows the RefreshIndicator to start from the absolute top of the screen
       extendBodyBehindAppBar: true,
+
       appBar: AppBar(
         backgroundColor: Colors.black.withOpacity(0.4),
-        // More transparent
         elevation: 0,
+        centerTitle: false,
         flexibleSpace: ClipRect(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            // The "Frosted" look
             child: Container(color: Colors.transparent),
           ),
         ),
-
-          title: Row(
-            mainAxisSize: MainAxisSize.min, // Keeps the logo and text tight together
+        // Clickable Logo and Title
+        title: InkWell(
+          onTap: () => html.window.location.reload(),
+          mouseCursor: SystemMouseCursors.click,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // 1. The Logo Image
               Image.network(
                 '${githubBase}jlstudios_logo.webp',
-                width: 320,  // Adjust size as needed
-                height: 320,
+                width: 32,
+                height: 32,
                 fit: BoxFit.contain,
-                // Error builder ensures the site doesn't look broken if the image fails to load
                 errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
               ),
-              const SizedBox(width: 12), // Spacing between logo and text
-
-              // 2. The Text Title
+              const SizedBox(width: 12),
               Text(
                 'JLStudios',
                 style: GoogleFonts.montserrat(
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
+                  color: Colors.white,
                 ),
               ),
             ],
           ),
+        ),
         actions: [
           if (!isMobile) ...[
             _navButton("About Us", _aboutKey),
@@ -123,60 +132,65 @@ class _LandingPageState extends State<LandingPage> {
             _navButton("Order Now", _purchaseKey),
             _navButton("FAQ", _faqKey),
           ],
-          // Replace the old IconButton with this:
+          // Instagram Icon
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 15),
             child: InkWell(
               onTap: () => _launchURL('https://instagram.com/JLStudios416'),
               child: Image.network(
-                '${githubBase}instagram_logo.webp', // Switched to network
+                '${githubBase}instagram_logo.webp',
                 width: 20,
                 height: 20,
                 fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.link, size: 20),
               ),
             ),
           ),
-          const SizedBox(width: 10),
         ],
       ),
+
       body: SelectionArea(
         child: Stack(
           children: [
-            // 1. The Fixed Background Star Layer
+            // Background Stars (Fixed)
             Positioned.fill(child: _buildGlobalStarField()),
 
-            SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  _buildHeroSection(),
-                  _buildAboutSection(isMobile, _aboutKey),
-                  _buildServicesSection(isMobile, _servicesKey),
-                  _buildHoloSelector(_holoKey),
-                  _buildHowToPurchase(isMobile, _purchaseKey),
-                  _buildFAQSection(_faqKey), // Pass the key here
-                  //_buildHowMadeSection(isMobile),
-                  //_buildCareTips(),
-                  //_buildAIFeedback(),
-                  _buildFooter(),
-                ],
+            // The Refresh Wrapper
+            RefreshIndicator(
+              color: const Color(0xFF4285F4), // Chrome Blue
+              backgroundColor: Colors.white,
+              strokeWidth: 2.5,
+              // 2. Position the indicator so it drops down OVER the navbar
+              edgeOffset: topPadding + 10,
+              displacement: 40,
+              onRefresh: () async {
+                html.window.location.reload();
+                return await Future.delayed(const Duration(milliseconds: 500));
+              },
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                // Bouncing physics makes the "pull" feel native like the Chrome App
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+                child: Column(
+                  children: [
+                    // 3. Compensate for the transparent AppBar so content starts below it
+                    SizedBox(height: navbarHeight + 20),
+
+                    _buildHeroSection(),
+                    _buildAboutSection(isMobile, _aboutKey),
+                    _buildServicesSection(isMobile, _servicesKey),
+                    _buildHoloSelector(_holoKey),
+                    _buildHowToPurchase(isMobile, _purchaseKey),
+                    _buildFAQSection(_faqKey),
+                    _buildFooter(),
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
-      // PASTE THE CODE HERE:
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _launchURL('https://instagram.com/JLStudios416'),
-        backgroundColor: const Color(0xFFD4AF37),
-        icon: const Icon(Icons.send, color: Colors.black),
-        label: const Text(
-          "DM TO ORDER",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-      ).animate().fadeIn(delay: 10.seconds).slideY(begin: 0.5),
     );
   }
 
@@ -1262,6 +1276,7 @@ class _CardSlideshowState extends State<CardSlideshow> {
 
     // Cache UI elements first
     precacheImage(NetworkImage('${githubBase}instagram_logo.webp'), context);
+    precacheImage(NetworkImage('${githubBase}jlstudios_logo.webp'), context);
     precacheImage(NetworkImage('${githubBase}how_cards_made.webp'), context);
 
     // Staggered and Resized Caching for slideshow
