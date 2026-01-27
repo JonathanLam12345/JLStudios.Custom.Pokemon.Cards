@@ -1194,6 +1194,8 @@ class _CardSlideshowState extends State<CardSlideshow> {
     for (String fileName in holoFiles) {
       precacheImage(NetworkImage('$githubBase$fileName'), context);
     }
+
+    precacheImage(NetworkImage('${githubBase}elsie_lam_image.webp'), context);
   }
 
 
