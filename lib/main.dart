@@ -578,143 +578,6 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget _buildHowMadeSection(bool isMobile) {
-    return Container(
-      padding: const EdgeInsets.all(60),
-      child: Column(
-        children: [
-          const SectionHeader(
-            title: "How It's Made",
-            subtitle: "The Craftsmanship",
-          ),
-          const SizedBox(height: 30),
-          Text.rich(
-            textAlign: TextAlign.center,
-            TextSpan(
-              // Default style for the whole sentence
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-                height: 1.5,
-              ),
-              children: [
-                const TextSpan(text: "We are active members of "),
-                TextSpan(
-                  text: "r/customtradingcard",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    // Using the lighter yellow we discussed
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline,
-                  ),
-                  // This makes it clickable
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () => _launchURL(
-                      'https://www.reddit.com/r/customtradingcard/',
-                    ),
-                ),
-                const TextSpan(
-                  text:
-                      ". Our process involves pressing two vinyl sheets onto a real Pokémon card base.",
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 40),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: Image.network(
-              '${githubBase}how_cards_made.webp', // Switched to network
-              width: 340,
-              fit: BoxFit.contain,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return const SizedBox(
-                  width: 340,
-                  height: 200, // Approximate height while loading
-                  child: Center(
-                    child: CircularProgressIndicator(color: Color(0xFFD4AF37)),
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) =>
-                  const Icon(Icons.broken_image, size: 50),
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            "Note: We use a white marker technique for selective holo. Small air bubbles or slight 'bulges' may occur due to the layering process, but we use silicon air blowers and dust covers to minimize these.",
-            style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCareTips() {
-    return Container(
-      padding: const EdgeInsets.all(60),
-      color: Colors.black,
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(Icons.verified_user, color: Color(0xFFD4AF37), size: 50),
-          const SizedBox(height: 20),
-          const Text(
-            "Handling & Storage",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            "• Keep the card in a protective sleeve at all times. (card sleeve included)\n"
-            "• Do NOT use wet wipes as the ink of the card may smear.\n"
-            "• Avoid direct sunlight for extended periods.",
-            style: TextStyle(fontSize: 18, height: 1.8),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAIFeedback() {
-    return Container(
-      padding: const EdgeInsets.all(60),
-      child: Column(
-        children: [
-          const SectionHeader(
-            title: "AI Art Philosophy",
-            subtitle: "Adapting to the Future",
-          ),
-          const SizedBox(height: 30),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: Column(
-              children: [
-                const Text(
-                  "Our team is aware of the negative feedback regarding what Gemini AI can do. Unfortunately, we don’t offer a service where an illustrator can sketch the full art. However, you can have someone create the artwork for you and then reach back out to us; we can proceed with Service \"Provided Custom Full Art\" from there.",
-                  style: TextStyle(fontSize: 16, height: 1.6),
-                ),
-                const SizedBox(height: 20),
-
-                const Text(
-                  "Without this technology, our project wouldn’t have progressed as far as it has. Instead of resisting, the best approach is to learn to adapt and find ways to work alongside this growing technology.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    height: 1.6,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildFooter() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 40),
@@ -1333,32 +1196,6 @@ class _CardSlideshowState extends State<CardSlideshow> {
     }
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //
-  //   // 1. UI Elements (The first things users see)
-  //   precacheImage(NetworkImage('${githubBase}instagram_logo.webp'), context);
-  //   precacheImage(NetworkImage('${githubBase}how_cards_made.webp'), context);
-  //
-  //   // 2. Slideshow Images
-  //   // We use the list you already defined
-  //   for (String url in cardImages) {
-  //     precacheImage(NetworkImage(url), context);
-  //   }
-  //
-  //   // 3. Holo Pattern Images
-  //   List<String> holoFiles = [
-  //     "scattered_glass.webp",
-  //     "reflective_rainbow.webp",
-  //     "fine_sprakle.webp",
-  //     "scattered_stars.webp",
-  //   ];
-  //
-  //   for (String fileName in holoFiles) {
-  //     precacheImage(NetworkImage('$githubBase$fileName'), context);
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -1452,7 +1289,7 @@ class GeminiDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const String refCardUrl =
-        "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/vlad.webp";
+        "https://raw.githubusercontent.com/JonathanLam12345/JLStudios.Custom.Pokemon.Cards/main/assets/elsie_lam_image.webp";
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F0F0F),
