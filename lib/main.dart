@@ -437,7 +437,7 @@ class _LandingPageState extends State<LandingPage> {
                 "Provide Your Full Art",
                 "\$25",
                 const Text(
-                  "Provide your own art. Recommended 50% subject, 50% background. We will work together to build the Pokémon card your artwork.",
+                  "Provide your own art. Recommended 50% subject, 50% background, with dimensions approximately 4.5\" x 5.5\". We will work together to build the Pokémon card using your artwork.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey,
@@ -684,7 +684,7 @@ class _LandingPageState extends State<LandingPage> {
                         ),
                         const SizedBox(height: 15),
                         const Text(
-                          "Note: We use a specialized white-ink technique to selectively mask the holographic effects. Due to this advanced layering process, minor air bubbles may occur; however, we use silicon compression tools during production to ensure these variations are kept to an absolute minimum for a premium finish. Additionally, a slightly raised texture will occur on the selective mask area.",
+                          "Note: We use a specialized white ink technique to selectively make the subject of the card non holo, which allows the subject of the card to stand out. Due to this advanced layering process, minor air bubbles may occur, however we use a silicon air blower during production to minimize this for a premium finish. Additionally, a slightly raised texture will occur on the selective non holo masked areas.",
                           style: TextStyle(
                             color: Colors.white38,
                             fontSize: 13,
@@ -693,6 +693,19 @@ class _LandingPageState extends State<LandingPage> {
                         ),
                       ],
                     ),
+                  ),
+//1.5
+                  _faqItem(
+                    "Do you except cash?",
+                    const Text(
+                      "Unfortunately, we only accept e-transfer before we start making your order. In the past, we have had situations where customers did not show up to pick up their orders, which used up our time. Thank you for your understanding.",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        height: 1.5,
+                        fontSize: 16,
+                      ),
+                    ),
+                    // isLast: true, // Add this flag to the last item
                   ),
 
                   // 2. HANDLING & STORAGE
